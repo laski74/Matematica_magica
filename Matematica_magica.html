@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio di Matematica Magica</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f6f7;
+            --text-color: #333;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            padding: 0 10px;
+            color: #ecf0f1;
+            border-bottom: 1px solid #34495e;
+            padding-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #bdc3c7;
+            padding: 15px 25px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            padding-left: 35px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .activity-card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 900px;
+            margin: 0 auto;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+
+        .activity-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: var(--accent-color);
+            margin-top: 30px;
+        }
+
+        .step-box {
+            background-color: #f8f9fa;
+            border-left: 5px solid var(--accent-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        /* Details / Summary Styles for Reveal */
+        details {
+            margin-top: 30px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        summary {
+            background-color: #ffeeba;
+            color: #856404;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            list-style: none; /* Hide default triangle */
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: "+ Mostra Spiegazione Matematica";
+            float: right;
+        }
+        
+        details[open] summary::after {
+            content: "- Nascondi";
+        }
+
+        .explanation-content {
+            padding: 20px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #c0392b;
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Instructions */
+        .instruction-list {
+            list-style-type: none;
+            padding: 0;
+            counter-reset: step-counter;
+        }
+        
+        .instruction-list li {
+            position: relative;
+            margin-bottom: 15px;
+            padding-left: 50px;
+        }
+
+        .instruction-list li::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 35px;
+            height: 35px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Matematica Magica</h2>
+        <button class="nav-btn active" onclick="showTab('teoria')">1. Introduzione (Base 10)</button>
+        <button class="nav-btn" onclick="showTab('magico9')">2. Il Magico 9</button>
+        <button class="nav-btn" onclick="showTab('tre-magie')">3. Tre Magie sui Numeri</button>
+        <button class="nav-btn" onclick="showTab('carta-parlante')">4. La Carta Parlante</button>
+        <button class="nav-btn" onclick="showTab('magia-ciclica')">5. Magia Ciclica (142857)</button>
+        <button class="nav-btn" onclick="showTab('calcolo-pedestre')">6. Un Calcolo Pedestre</button>
+        <button class="nav-btn" onclick="showTab('locanda')">7. La Locanda dei 4 Cantoni</button>
+        <button class="nav-btn" onclick="showTab('coppie-reali')">8. Le Coppie Reali</button>
+    </div>
+
+    <div class="main-content">
+
+        <div id="teoria" class="activity-card active">
+            <h1>Il Sistema di Numerazione in Base 10</h1>
+            <p>Prima di iniziare i giochi, ripassiamo brevemente come funziona il nostro sistema numerico. È il fondamento di molti trucchi che vedremo.</p>
+            
+            <div class="step-box">
+                <p>Il nostro sistema è <strong>posizionale</strong>. Il valore di una cifra dipende dalla sua posizione.</p>
+                <p>Ad esempio, il numero $555$ può essere scomposto come:</p>
+                $$5 \times 100 + 5 \times 10 + 5 \times 1 = 500 + 50 + 5$$
+            </div>
+
+            <p>Ogni posizione corrisponde a una potenza di 10:</p>
+            <ul>
+                <li><strong>Unità:</strong> $10^0 = 1$</li>
+                <li><strong>Decine:</strong> $10^1 = 10$</li>
+                <li><strong>Centinaia:</strong> $10^2 = 100$</li>
+                <li><strong>Migliaia:</strong> $10^3 = 1000$</li>
+            </ul>
+
+            <p class="note">I Romani, al contrario, usavano un sistema additivo (M, D, C, L, X, V, I) che rendeva i calcoli molto difficili. Il sistema posizionale (indiano/arabo) ci permette di fare magie con l'algebra!</p>
+        </div>
+
+        <div id="magico9" class="activity-card">
+            <h1>Il Magico 9</h1>
+            <p>Un gioco di previsione che coinvolge tutta la classe.</p>
+            
+            <h3>Fase 1: Preparazione</h3>
+            <p>Scrivi il numero <strong>9</strong> su un foglio, ripiegalo e mettilo in una busta o lascialo in vista ma coperto.</p>
+
+            <h3>Fase 2: Istruzioni alla classe</h3>
+            <ol class="instruction-list">
+                <li>Pensate a un numero intero di due cifre (es. $85$).</li>
+                <li>Eseguite la somma delle due cifre del vostro numero ($8+5=13$).</li>
+                <li>Sottraete questa somma dal numero che avete pensato all'inizio ($85 - 13 = 72$).</li>
+                <li>Se il risultato ha una sola cifra, fermatevi. Se ha due cifre, sommatele tra loro ($7+2=9$).</li>
+                <li>Al mio via, dite tutti il risultato ad alta voce!</li>
+            </ol>
+
+            <details>
+                <summary>Svelare il Trucco</summary>
+                <div class="explanation-content">
+                    <p>Un numero di due cifre $xy$ si scrive in base 10 come $10x + y$.</p>
+                    <p>Le istruzioni chiedono di sottrarre la somma delle cifre ($x+y$) dal numero originale:</p>
+                    $$(10x + y) - (x + y) = 10x + y - x - y = 9x$$
+                    <p>Il risultato è sempre $9x$, cioè un multiplo di 9.</p>
+                    <p>Secondo il criterio di divisibilità per 9, la somma delle cifre di un multiplo di 9 è sempre 9 (o un suo multiplo, ma in questo intervallo è sempre 9).</p>
+                </div>
+            </details>
+        </div>
+
+        <div id="tre-magie" class="activity-card">
+            <h1>Tre Piccole Magie sui Numeri</h1>
+            
+            <h3>1. Il Numero 37</h3>
+            <ol class="instruction-list">
+                <li>Scrivete un numero di 3 cifre tutte uguali (es. $333$, $777$).</li>
+                <li>Dividete questo numero per la somma delle sue cifre (Es. $333 : (3+3+3)$).</li>
+                <li>Il risultato sarà sempre <strong>37</strong>!</li>
+            </ol>
+            <details>
+                <summary>Spiegazione (Numero 37)</summary>
+                <div class="explanation-content">
+                    <p>Un numero con tre cifre uguali $a$ si scrive come $111a$.</p>
+                    <p>La somma delle cifre è $a+a+a = 3a$.</p>
+                    <p>L'operazione è:</p>
+                    $$ \frac{111a}{3a} = \frac{111}{3} = 37 $$
+                    <p>Il risultato è indipendente da $a$.</p>
+                </div>
+            </details>
+
+            <hr>
+
+            <h3>2. Il Numero 3087</h3>
+            <ol class="instruction-list">
+                <li>Scrivete un numero di 4 cifre decrescenti consecutive (es. $5432$ o $9876$).</li>
+                <li>Scrivete il numero con le cifre invertite (es. $2345$).</li>
+                <li>Sottraete il numero più piccolo da quello più grande ($5432 - 2345$).</li>
+                <li>Il risultato è sempre <strong>3087</strong>.</li>
+            </ol>
+            <details>
+                <summary>Spiegazione (Numero 3087)</summary>
+                <div class="explanation-content">
+                    <p>Prendiamo un numero con cifre $d+3, d+2, d+1, d$. Il suo valore è:</p>
+                    $$1000(d+3) + 100(d+2) + 10(d+1) + d$$
+                    <p>Sottraendo l'inverso, i termini con $d$ si cancellano e rimane una costante fissa pari a 3087.</p>
+                </div>
+            </details>
+
+            <hr>
+
+            <h3>3. Il Numero Ripetuto</h3>
+            <ol class="instruction-list">
+                <li>Scrivete un numero di 3 cifre (es. $345$).</li>
+                <li>Ripetelo di seguito per formare un numero di 6 cifre ($345345$).</li>
+                <li>Dividete per <strong>7</strong>.</li>
+                <li>Dividete il risultato per <strong>11</strong>.</li>
+                <li>Dividete il nuovo risultato per <strong>13</strong>.</li>
+                <li>Otterrete il numero di partenza!</li>
+            </ol>
+            <details>
+                <summary>Spiegazione (Numero Ripetuto)</summary>
+                <div class="explanation-content">
+                    <p>Scrivere $abcabc$ equivale a fare $abc \times 1000 + abc = abc \times 1001$.</p>
+                    <p>Notiamo che $7 \times 11 \times 13 = 1001$.</p>
+                    <p>Quindi dividere successivamente per 7, 11 e 13 equivale a dividere per 1001:</p>
+                    $$ \frac{abc \times 1001}{1001} = abc $$
+                </div>
+            </details>
+        </div>
+
+        <div id="carta-parlante" class="activity-card">
+            <h1>La Carta Parlante</h1>
+            <p>Un trucco di posizione con le carte.</p>
+
+            <h3>Preparazione (Solo per l'insegnante)</h3>
+            <p>Disponi 10 carte (dall'1 al 10) coperte sul tavolo in questo ordine esatto (sinistra -> destra):</p>
+            <div class="step-box" style="text-align: center; font-size: 1.2em; letter-spacing: 5px;">
+                2 - 4 - 5 - 1 - 10 - 3 - 7 - 9 - 6 - 8
+            </div>
+            <p><em>Nota: Nello schema originale l'ordine suggerito può variare, l'importante è conoscere la posizione della chiave. Per semplicità qui usiamo un metodo automatico.</em></p>
+            <p><strong>Metodo Semplificato "Matematico":</strong> Mettete il 10 in seconda posizione da destra (posizione 9 su 10).</p>
+
+            <h3>Esecuzione</h3>
+            <ol class="instruction-list">
+                <li>Chiedi a uno studente di spostare un gruppo di carte (es. 3 carte) da sinistra a destra, una alla volta o in blocco, senza cambiarne l'ordine. Tu sei girato di spalle.</li>
+                <li>Girati. Scopri la carta che si trova ora nella posizione: <strong>Valore della carta precedente + Posizione precedente</strong>.</li>
+                <li><em>(Per la prima volta, se il 10 era in pos. 2 da destra, la carta rivelatrice sarà la seconda da destra).</em></li>
+            </ol>
+            
+            <div class="note">
+                Questo trucco è più complesso da spiegare in breve senza le carte fisiche in mano. Si consiglia di leggere attentamente il PDF "La carta parlante" per la sequenza esatta dei movimenti.
+            </div>
+
+            <details>
+                <summary>Il Principio Matematico</summary>
+                <div class="explanation-content">
+                    <p>Si basa sull'aritmetica modulare e le permutazioni cicliche.</p>
+                    <p>Se la carta "chiave" (il 10 o la carta rivelata al turno prima) si trova in posizione $p_0$ e ha valore $v$, e lo spettatore sposta $k$ carte:</p>
+                    <p>La nuova posizione da controllare sarà legata allo spostamento ciclico. Il trucco è costruito in modo che la carta in posizione $X$ riveli esattamente di quanto è stato lo spostamento.</p>
+                </div>
+            </details>
+        </div>
+
+        <div id="magia-ciclica" class="activity-card">
+            <h1>Magia Ciclica (142857)</h1>
+            
+            <h3>Preparazione</h3>
+            <p>Prepara una striscia di carta chiusa ad anello (Nastro di Möbius o anello semplice) con scritto sopra:</p>
+            <h2 style="text-align: center; letter-spacing: 10px;">1 4 2 8 5 7</h2>
+
+            <h3>Esecuzione</h3>
+            <ol class="instruction-list">
+                <li>Chiedi a uno studente di scegliere un numero da 1 a 6.</li>
+                <li>Fategli moltiplicare $142857$ per quel numero (con calcolatrice).</li>
+                <li>Il risultato conterrà le stesse cifre dell'anello, nello stesso ordine ciclico!</li>
+                <li>Taglia l'anello nel punto giusto per mostrare la sequenza ottenuta.</li>
+            </ol>
+
+            <div class="step-box">
+                $$ 1 \times 142857 = 142857 $$
+                $$ 2 \times 142857 = 285714 $$
+                $$ 3 \times 142857 = 428571 $$
+                $$ ... $$
+                $$ 7 \times 142857 = 999999 \text{ (l'eccezione!)} $$
+            </div>
+
+            <details>
+                <summary>Spiegazione</summary>
+                <div class="explanation-content">
+                    <p>Il numero $142857$ è il periodo del numero razionale $1/7$.</p>
+                    $$ 1/7 = 0,\overline{142857} $$
+                    $$ 2/7 = 0,\overline{285714} $$
+                    <p>È un "numero ciclico". Moltiplicandolo per $n \le 6$, le cifre ruotano semplicemente di posizione senza cambiare.</p>
+                </div>
+            </details>
+        </div>
+
+        <div id="calcolo-pedestre" class="activity-card">
+            <h1>Un Calcolo Pedestre</h1>
+            <p>Indovina età e numero di scarpe.</p>
+
+            <h3>Esecuzione</h3>
+            <ol class="instruction-list">
+                <li>Scrivete il vostro numero di scarpe (intero).</li>
+                <li>Moltiplicatelo per <strong>100</strong>.</li>
+                <li>Sottraete il vostro <strong>anno di nascita</strong>.</li>
+                <li>Ditemi il risultato.</li>
+            </ol>
+
+            <h3>Il Tuo Compito (Mago)</h3>
+            <p>Al risultato che ti dicono, aggiungi l'<strong>anno corrente</strong> (es. 2025 o 2026).</p>
+            <p>Otterrai un numero di 4 cifre: <strong>le prime due sono il numero di scarpe, le ultime due l'età!</strong></p>
+
+            <details>
+                <summary>Spiegazione Algebrica</summary>
+                <div class="explanation-content">
+                    <p>Sia $s$ il numero di scarpe e $a$ l'anno di nascita.</p>
+                    <p>Il calcolo dello studente è: $100s - a$.</p>
+                    <p>Tu aggiungi l'anno corrente $C$:</p>
+                    $$ Risultato = 100s - a + C $$
+                    $$ Risultato = 100s + (C - a) $$
+                    <p>Poiché $(C - a)$ è l'età, otteniamo: $100s + \text{età}$.</p>
+                    <p>Moltiplicare per 100 sposta le scarpe alle centinaia/migliaia, lasciando libere le ultime due cifre per l'età.</p>
+                </div>
+            </details>
+        </div>
+
+        <div id="locanda" class="activity-card">
+            <h1>La Locanda dei Quattro Cantoni</h1>
+            <p>Una storia logica che si risolve da sola.</p>
+
+            <h3>Materiale</h3>
+            <p>Prendi i 4 Assi, 4 Fanti (J), 4 Regine (Q), 4 Re (K).</p>
+
+            <h3>Storia ed Esecuzione</h3>
+            <ol class="instruction-list">
+                <li>Disponi i 4 ASSI sul tavolo (le 4 stanze vuote).</li>
+                <li>Metti sopra ogni Asso un FANTE (i primi ospiti).</li>
+                <li>Metti sopra ogni mazzetto un RE (altri ospiti).</li>
+                <li>Metti sopra ogni mazzetto una REGINA.</li>
+                <li>Ora hai 4 mazzetti. Raccoglili uno sopra l'altro in ordine.</li>
+                <li><strong>Fai tagliare il mazzo</strong> quante volte vuole il pubblico (senza mescolare, solo tagliare).</li>
+                <li>Distribuisci le carte una alla volta in 4 nuove pile (stanza 1, 2, 3, 4, stanza 1, 2...).</li>
+                <li>Gira i mazzetti: ogni stanza avrà 4 carte dello stesso valore! (Tutti Assi, tutti Fanti, etc.)</li>
+            </ol>
+
+            <details>
+                <summary>Spiegazione (Aritmetica Modulare)</summary>
+                <div class="explanation-content">
+                    <p>Abbiamo creato una sequenza periodica. Raccogliendo i mazzetti abbiamo una sequenza del tipo:</p>
+                    <p>A, J, K, Q, A, J, K, Q...</p>
+                    <p>Tagliare il mazzo (spostare un blocco dall'inizio alla fine) è una traslazione ciclica che non altera la periodicità relativa.</p>
+                    <p>Distribuendo su 4 pile, stiamo facendo un'operazione "modulo 4". Tutte le carte congruenti modulo 4 finiranno insieme.</p>
+                </div>
+            </details>
+        </div>
+
+        <div id="coppie-reali" class="activity-card">
+            <h1>Le Coppie Reali</h1>
+            
+            <h3>Preparazione (Segreta)</h3>
+            <p>Prendi 4 Re (K) e 4 Regine (Q). Mettili in un mazzetto alternando i semi in modo identico per le prime 4 e le ultime 4.</p>
+            <p>Esempio ordine: <strong>Cuori, Picche, Quadri, Fiori</strong> (Re) seguiti da <strong>Cuori, Picche, Quadri, Fiori</strong> (Regine).</p>
+            <p><em>(Non importa se sono K o Q, l'importante è l'ordine dei SEMI: C, P, Q, F, C, P, Q, F).</em></p>
+
+            <h3>Esecuzione</h3>
+            <ol class="instruction-list">
+                <li>Mostra il mazzetto velocemente (sembra casuale).</li>
+                <li>Fai <strong>tagliare</strong> il mazzo al pubblico più volte.</li>
+                <li>Metti il mazzo dietro la schiena.</li>
+                <li>Preleva la prima carta e la quinta carta (metà mazzo esatto). Saranno una coppia dello stesso seme!</li>
+                <li>Prosegui con la seconda e la sesta, ecc.</li>
+                <li>Mostra le coppie formate: sono tutte accoppiate per seme!</li>
+            </ol>
+
+            <details>
+                <summary>Spiegazione</summary>
+                <div class="explanation-content">
+                    <p>Il mazzetto è una sequenza ordinata di semi ripetuta due volte ($S_1, S_2, S_3, S_4, S_1, S_2, S_3, S_4$).</p>
+                    <p>Tagliare il mazzo mantiene invariata la distanza di 4 posizioni tra carte dello stesso seme.</p>
+                    <p>La carta in posizione $x$ avrà sempre lo stesso seme della carta in posizione $x+4$ (modulo 8).</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Nascondi tutte le schede
+            const cards = document.querySelectorAll('.activity-card');
+            cards.forEach(card => card.classList.remove('active'));
+
+            // Disattiva tutti i bottoni
+            const btns = document.querySelectorAll('.nav-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+
+            // Attiva la scheda e il bottone selezionati
+            document.getElementById(tabId).classList.add('active');
+            
+            // Trova il bottone che ha chiamato la funzione (approssimazione basata sull'ordine o ID se necessario, qui usiamo event.target se passassimo l'evento, ma facciamo un check semplice sui testi o indici se servisse. Per semplicità, aggiungiamo active al click manuale).
+            // Per semplicità nell'HTML statico, ciclo per trovare quello con l'onclick corrispondente
+            btns.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Chiudi i dettagli aperti quando si cambia scheda per pulizia
+            const details = document.querySelectorAll('details');
+            details.forEach(d => d.removeAttribute('open'));
+        }
+    </script>
+</body>
+</html>

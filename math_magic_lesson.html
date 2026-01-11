@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematica Magica - Lezione Interattiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .timer-section {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .timer {
+            font-size: 2em;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .timer-btn {
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+        
+        .timer-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .game-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        .game-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        
+        .game-title {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .game-instructions {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .game-instructions ol, .game-instructions ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .game-instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .example {
+            background: #f0f4ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            color: #667eea;
+        }
+        
+        .toggle-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .toggle-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .explanation {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .explanation.active {
+            max-height: 1000px;
+            padding: 20px;
+            border: 2px solid #667eea;
+        }
+        
+        .explanation h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .explanation p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .formula {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #667eea;
+        }
+        
+        footer {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: #666;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .timer.warning {
+            color: #ffc107;
+            animation: pulse 1s infinite;
+        }
+        
+        .timer.danger {
+            color: #ff4444;
+            animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .timer-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎩 Matematica Magica 🎩</h1>
+            <p class="subtitle">Lezione Interattiva per Supplenza - 45-50 minuti</p>
+            <div class="timer-section">
+                <span class="timer" id="timer">45:00</span>
+                <button class="timer-btn" onclick="startTimer()">▶ Avvia</button>
+                <button class="timer-btn" onclick="pauseTimer()">⏸ Pausa</button>
+                <button class="timer-btn" onclick="resetTimer()">🔄 Reset</button>
+            </div>
+        </header>
+
+        <div class="games-grid">
+            <!-- GIOCO 1 -->
+            <div class="game-card">
+                <div class="game-number">1</div>
+                <h2 class="game-title">🔮 Il Magico 9</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni per gli studenti:</strong></p>
+                    <ol>
+                        <li>Pensate a un numero di due cifre (es: 85)</li>
+                        <li>Sommate le due cifre (8 + 5 = 13)</li>
+                        <li>Sottraete il risultato dal numero iniziale (85 - 13 = 72)</li>
+                        <li>Se il risultato ha due cifre, sommatele (7 + 2 = 9)</li>
+                    </ol>
+                    <div class="example">Esempio: 85 → 8+5=13 → 85-13=72 → 7+2=9</div>
+                    <p><strong>🎯 Risultato:</strong> Otterrete sempre 9!</p>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp1')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp1">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Un numero di due cifre può essere scritto come: <strong>n = 10x + y</strong></p>
+                    <div class="formula">
+                        n - (x + y) = 10x + y - x - y = 9x
+                    </div>
+                    <p>Il risultato è sempre un multiplo di 9! E per il criterio di divisibilità, la somma delle cifre di un multiplo di 9 è sempre 9 (o un multiplo di 9 minore).</p>
+                    <p><strong>Domande per la riflessione:</strong></p>
+                    <ul>
+                        <li>Perché funziona con qualsiasi numero a due cifre?</li>
+                        <li>Cosa succederebbe con numeri a tre cifre?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GIOCO 2 -->
+            <div class="game-card">
+                <div class="game-number">2</div>
+                <h2 class="game-title">🧙‍♂️ Lettura del Pensiero</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Pensate a un numero qualsiasi (es: 7)</li>
+                        <li>Aggiungete 3 (7 + 3 = 10)</li>
+                        <li>Moltiplicate per 2 (10 × 2 = 20)</li>
+                        <li>Sottraete 4 (20 - 4 = 16)</li>
+                        <li>Dividete per 2 (16 ÷ 2 = 8)</li>
+                        <li>Sottraete il numero pensato all'inizio (8 - 7 = 1)</li>
+                    </ol>
+                    <div class="example">Numero pensato: 7 → +3 → ×2 → -4 → ÷2 → -7 = 1</div>
+                    <p><strong>🎯 Predizione:</strong> Otterrete sempre 1!</p>
+                    <p><strong>💡 Sfida avanzata:</strong> Provate con altri numeri iniziali. Funziona sempre?</p>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp2')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp2">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Chiamiamo <strong>x</strong> il numero pensato. Seguiamo passo per passo:</p>
+                    <div class="formula">
+                        1. Numero pensato: x<br>
+                        2. Aggiungi 3: x + 3<br>
+                        3. Moltiplica per 2: 2(x + 3) = 2x + 6<br>
+                        4. Sottrai 4: 2x + 6 - 4 = 2x + 2<br>
+                        5. Dividi per 2: (2x + 2) ÷ 2 = x + 1<br>
+                        6. Sottrai il numero pensato: (x + 1) - x = 1
+                    </div>
+                    <p>Indipendentemente dal valore di x, il risultato è sempre 1! Le operazioni si "mangiano" il numero originale.</p>
+                    <p><strong>Attività creativa:</strong> Inventate la vostra sequenza magica! Quali operazioni usereste per ottenere sempre 5? O sempre 10?</p>
+                    <p><strong>Hint:</strong> Se volete ottenere sempre n, dovete fare in modo che rimanga solo una costante alla fine.</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 3 -->
+            <div class="game-card">
+                <div class="game-number">3</div>
+                <h2 class="game-title">✨ Il Numero 1089</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete un numero di tre cifre non tutte uguali (es: 377)</li>
+                        <li>Ribaltate le cifre (377 → 773)</li>
+                        <li>Sottraete il minore dal maggiore (773 - 377 = 396)</li>
+                        <li>Ribaltate il risultato (396 → 693)</li>
+                        <li>Sommate gli ultimi due numeri (396 + 693 = 1089)</li>
+                    </ol>
+                    <div class="example">377 → 773 → 773-377=396 → 693 → 396+693=1089</div>
+                    <div class="note">⚠️ Se al punto 3 ottenete due cifre, aggiungete uno zero: 99 → 099</div>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp3')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp3">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Chiamiamo <strong>x</strong> il numero pensato. Seguiamo passo per passo:</p>
+                    <div class="formula">
+                        1. Numero pensato: x<br>
+                        2. Aggiungi 3: x + 3<br>
+                        3. Moltiplica per 2: 2(x + 3) = 2x + 6<br>
+                        4. Sottrai 4: 2x + 6 - 4 = 2x + 2<br>
+                        5. Dividi per 2: (2x + 2) ÷ 2 = x + 1<br>
+                        6. Sottrai il numero pensato: (x + 1) - x = 1
+                    </div>
+                    <p>Indipendentemente dal valore di x, il risultato è sempre 1! Le operazioni si "mangiano" il numero originale.</p>
+                    <p><strong>Attività creativa:</strong> Inventate la vostra sequenza magica! Quali operazioni usereste per ottenere sempre 5? O sempre 10?</p>
+                    <p><strong>Hint:</strong> Se volete ottenere sempre n, dovete fare in modo che rimanga solo una costante alla fine.</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 3 -->
+            <div class="game-card">
+                <div class="game-number">3</div>
+                <h2 class="game-title">✨ Il Numero 1089</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete un numero di tre cifre non tutte uguali (es: 377)</li>
+                        <li>Ribaltate le cifre (377 → 773)</li>
+                        <li>Sottraete il minore dal maggiore (773 - 377 = 396)</li>
+                        <li>Ribaltate il risultato (396 → 693)</li>
+                        <li>Sommate gli ultimi due numeri (396 + 693 = 1089)</li>
+                    </ol>
+                    <div class="example">377 → 773 → 773-377=396 → 693 → 396+693=1089</div>
+                    <div class="note">⚠️ Se al punto 3 ottenete due cifre, aggiungete uno zero: 99 → 099</div>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp2')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp2">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Numero iniziale: <strong>n = 100a + 10b + c</strong> (con a ≠ c)</p>
+                    <p>Numero ribaltato: <strong>n' = 100c + 10b + a</strong></p>
+                    <div class="formula">
+                        n - n' = 100(a-c) - (a-c) = 99(a-c)
+                    </div>
+                    <p>Il risultato è sempre un multiplo di 99. Quando ribalti un multiplo di 99 ottieni 99 × (11-k). Sommandoli ottieni sempre 1089!</p>
+                    <p><strong>Attività di gruppo:</strong> Provate con almeno 3 numeri diversi e verificate che funzioni sempre.</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 4 -->
+            <div class="game-card">
+                <div class="game-number">4</div>
+                <h2 class="game-title">🎯 Il Numero 37</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete un numero con tre cifre uguali (es: 333)</li>
+                        <li>Dividetelo per la somma delle sue cifre</li>
+                        <li>Il risultato sarà sempre 37!</li>
+                    </ol>
+                    <div class="example">333 ÷ (3+3+3) = 333 ÷ 9 = 37</div>
+                    <div class="example">777 ÷ (7+7+7) = 777 ÷ 21 = 37</div>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp4')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp4">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Un numero con tre cifre uguali si scrive: <strong>n = 100a + 10a + a = 111a</strong></p>
+                    <p>La somma delle cifre è: <strong>a + a + a = 3a</strong></p>
+                    <div class="formula">
+                        n ÷ (somma cifre) = 111a ÷ 3a = 111 ÷ 3 = 37
+                    </div>
+                    <p>Il trucco funziona perché 111 = 3 × 37, indipendentemente dalla cifra scelta!</p>
+                    <p><strong>Sfida:</strong> Trovate altri numeri "magici" simili con 2 o 4 cifre ripetute.</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 5 -->
+            <div class="game-card">
+                <div class="game-number">5</div>
+                <h2 class="game-title">🔄 Il Numero Ciclico 142857</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete il numero 142857</li>
+                        <li>Moltiplicatelo per un numero da 1 a 6</li>
+                        <li>Osservate il risultato!</li>
+                    </ol>
+                    <div class="example">
+                        142857 × 1 = 142857<br>
+                        142857 × 2 = 285714<br>
+                        142857 × 3 = 428571<br>
+                        142857 × 4 = 571428
+                    </div>
+                    <p><strong>🎯 Scoperta:</strong> Le cifre sono sempre le stesse, ma ruotate!</p>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp5')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp5">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>142857 è chiamato <strong>numero ciclico</strong> perché moltiplicato per 1-6 produce sempre le stesse cifre in ordine rotato.</p>
+                    <div class="formula">
+                        1 ÷ 7 = 0,142857142857... (periodico!)
+                    </div>
+                    <p>Questo numero è il periodo dell'inverso del numero primo 7. Quando moltiplichi per 2, 3, 4, 5, 6 ottieni rotazioni cicliche.</p>
+                    <p><strong>Curiosità:</strong> Cosa succede se moltiplichi per 7? Prova: 142857 × 7 = 999999!</p>
+                    <p><strong>Ricerca:</strong> Esistono altri numeri ciclici? Provate con 1÷13, 1÷17...</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 6 -->
+            <div class="game-card">
+                <div class="game-number">6</div>
+                <h2 class="game-title">🎲 Il Numero Ripetuto</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete un numero di tre cifre (es: 345)</li>
+                        <li>Riscrivetelo di seguito: 345345</li>
+                        <li>Dividete per 7: 345345 ÷ 7 = 49335</li>
+                        <li>Dividete per 11: 49335 ÷ 11 = 4485</li>
+                        <li>Dividete per 13: 4485 ÷ 13 = 345</li>
+                    </ol>
+                    <div class="example">345 → 345345 → ÷7 → ÷11 → ÷13 → 345</div>
+                    <p><strong>🎯 Magia:</strong> Tornate sempre al numero iniziale!</p>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp6')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp6">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Quando ripeti tre cifre "abc", ottieni:</p>
+                    <div class="formula">
+                        n = 1000 × abc + abc = 1001 × abc
+                    </div>
+                    <p>Ma 1001 ha una proprietà speciale:</p>
+                    <div class="formula">
+                        1001 = 7 × 11 × 13
+                    </div>
+                    <p>Quindi dividendo per 7, poi 11, poi 13, stai semplicemente dividendo per 1001, e ritorni al numero originale!</p>
+                    <p><strong>Verifica:</strong> Calcolate 7 × 11 × 13 con la calcolatrice e confermate che è 1001.</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 7 -->
+            <div class="game-card">
+                <div class="game-number">7</div>
+                <h2 class="game-title">👟 Calcolo Pedestre</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete il vostro numero di scarpe (es: 39)</li>
+                        <li>Moltiplicatelo per 100 (39 × 100 = 3900)</li>
+                        <li>Sottraete il vostro anno di nascita (es: 1985)</li>
+                        <li>3900 - 1985 = 1915</li>
+                    </ol>
+                    <p><strong>🎯 Indovinello:</strong> Sommate 2025 al risultato. Le prime due cifre sono il numero di scarpe, le ultime due l'età!</p>
+                    <div class="example">1915 + 2025 = 3940 → Scarpe: 39, Età: 40</div>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp7')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp7">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Quando ripeti tre cifre "abc", ottieni:</p>
+                    <div class="formula">
+                        n = 1000 × abc + abc = 1001 × abc
+                    </div>
+                    <p>Ma 1001 ha una proprietà speciale:</p>
+                    <div class="formula">
+                        1001 = 7 × 11 × 13
+                    </div>
+                    <p>Quindi dividendo per 7, poi 11, poi 13, stai semplicemente dividendo per 1001, e ritorni al numero originale!</p>
+                    <p><strong>Verifica:</strong> Calcolate 7 × 11 × 13 con la calcolatrice e confermate che è 1001.</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 6 -->
+            <div class="game-card">
+                <div class="game-number">6</div>
+                <h2 class="game-title">🎲 Il Numero Ripetuto</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete un numero di tre cifre (es: 345)</li>
+                        <li>Riscrivetelo di seguito: 345345</li>
+                        <li>Dividete per 7: 345345 ÷ 7 = 49335</li>
+                        <li>Dividete per 11: 49335 ÷ 11 = 4485</li>
+                        <li>Dividete per 13: 4485 ÷ 13 = 345</li>
+                    </ol>
+                    <div class="example">345 → 345345 → ÷7 → ÷11 → ÷13 → 345</div>
+                    <p><strong>🎯 Magia:</strong> Tornate sempre al numero iniziale!</p>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp6')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp6">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Quando ripeti tre cifre "abc", ottieni:</p>
+                    <div class="formula">
+                        n = 1000 × abc + abc = 1001 × abc
+                    </div>
+                    <p>Ma 1001 ha una proprietà speciale:</p>
+                    <div class="formula">
+                        1001 = 7 × 11 × 13
+                    </div>
+                    <p>Quindi dividendo per 7, poi 11, poi 13, stai semplicemente dividendo per 1001, e ritorni al numero originale!</p>
+                    <p><strong>Verifica:</strong> Calcolate 7 × 11 × 13 con la calcolatrice e confermate che è 1001.</p>
+                </div>
+            </div>
+
+            <!-- GIOCO 7 -->
+            <div class="game-card">
+                <div class="game-number">7</div>
+                <h2 class="game-title">👟 Calcolo Pedestre</h2>
+                <div class="game-instructions">
+                    <p><strong>Istruzioni:</strong></p>
+                    <ol>
+                        <li>Scrivete il vostro numero di scarpe (es: 39)</li>
+                        <li>Moltiplicatelo per 100 (39 × 100 = 3900)</li>
+                        <li>Sottraete il vostro anno di nascita (es: 1985)</li>
+                        <li>3900 - 1985 = 1915</li>
+                    </ol>
+                    <p><strong>🎯 Indovinello:</strong> Sommate 2025 al risultato. Le prime due cifre sono il numero di scarpe, le ultime due l'età!</p>
+                    <div class="example">1915 + 2025 = 3940 → Scarpe: 39, Età: 40</div>
+                </div>
+                <button class="toggle-btn" onclick="toggleExplanation('exp6')">🔍 Mostra Spiegazione</button>
+                <div class="explanation" id="exp6">
+                    <h4>Spiegazione Matematica:</h4>
+                    <p>Chiamiamo s = numero scarpe, a = anno nascita, c = anno corrente (2025)</p>
+                    <div class="formula">
+                        Risultato = s × 100 - a + c<br>
+                        = s × 100 + (c - a)<br>
+                        = s × 100 + età
+                    </div>
+                    <p>Dato che sia s che età sono numeri a due cifre, quando li scriviamo insieme otteniamo un numero di quattro cifre: le prime due sono s, le ultime due sono l'età!</p>
+                    <p><strong>Limitazioni:</strong> Non funziona per persone oltre 99 anni o per bambini molto piccoli (risultato negativo).</p>
+                    <p><strong>Personalizzazione:</strong> Come cambiereste il gioco per l'anno 2026?</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>📚 Struttura della Lezione (45-50 minuti)</strong></p>
+            <p>• Introduzione (5 min): Presentazione della matematica magica<br>
+            • Fase esplorativa (25 min): Gli studenti provano i giochi in gruppo<br>
+            • Fase di scoperta (15 min): Formulano ipotesi sulle spiegazioni<br>
+            • Verifica (5 min): Rivelazione e discussione delle spiegazioni matematiche</p>
+            <p style="margin-top: 15px; color: #999;">Materiale ad uso personale - ITIS Matematica</p>
+        </footer>
+    </div>
+
+    <script>
+        let timerInterval;
+        let timeLeft = 45 * 60;
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Cambia colore se manca poco tempo
+            if (timeLeft <= 300 && timeLeft > 60) { // Ultimi 5 minuti
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('danger');
+            } else if (timeLeft <= 60) { // Ultimo minuto
+                timerElement.classList.add('danger');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'danger');
+            }
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        pauseTimer();
+                        alert('⏰ Tempo terminato! La lezione è conclusa.');
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeLeft = 45 * 60;
+            updateTimerDisplay();
+        }
+
+        function toggleExplanation(id) {
+            const explanation = document.getElementById(id);
+            explanation.classList.toggle('active');
+            
+            const btn = explanation.previousElementSibling;
+            if (explanation.classList.contains('active')) {
+                btn.textContent = '🔼 Nascondi Spiegazione';
+            } else {
+                btn.textContent = '🔍 Mostra Spiegazione';
+            }
+        }
+    </script>
+</body>
+</html>

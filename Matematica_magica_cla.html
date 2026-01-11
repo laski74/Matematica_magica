@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematica Magica - Attività Didattiche</title>
+    
+    <!-- Configurazione MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 3em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        /* Navigazione a Tab */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .tab-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        
+        .tab-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* Contenuti delle schede */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Card del gioco */
+        .gioco-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .gioco-card h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #667eea;
+        }
+        
+        .introduzione {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            line-height: 1.8;
+            border-left: 5px solid #667eea;
+        }
+        
+        /* Passi del gioco */
+        .passo {
+            background: #f8f9fa;
+            border-left: 5px solid #4caf50;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .passo.visibile {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(-30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0);
+            }
+        }
+        
+        .passo h3 {
+            color: #4caf50;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .passo-numero {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+        
+        .esempio {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 1.15em;
+        }
+        
+        .esempio strong {
+            color: #1976d2;
+        }
+        
+        .nota {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+        
+        .risultato {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.3em;
+            display: none;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        
+        .risultato.visibile {
+            display: block;
+            animation: bounceIn 0.8s;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .risultato h4 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .evidenziato {
+            background: #ffeb3b;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.3em;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .spiegazione {
+            background: #f3e5f5;
+            border: 3px solid #9c27b0;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .spiegazione.visibile {
+            display: block;
+            animation: fadeIn 0.6s;
+        }
+        
+        .spiegazione h3 {
+            color: #9c27b0;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .formula {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Pulsanti */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 15px 10px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-prossimo {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        }
+        
+        .btn-rivela {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+        
+        .btn-segreto {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+        }
+        
+        .controlli {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        /* Tabelle */
+        .tabella {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 1.1em;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tabella th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        
+        .tabella td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .tabella tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .tabella tr:hover {
+            background: #f0f4ff;
+        }
+        
+        /* Lista ordinata e non ordinata */
+        ol, ul {
+            margin-left: 30px;
+            margin-top: 15px;
+            font-size: 1.15em;
+            line-height: 1.8;
+        }
+        
+        li {
+            margin: 10px 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            
+            .gioco-card {
+                padding: 20px;
+            }
+            
+            .gioco-card h2 {
+                font-size: 1.8em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ Matematica Magica ✨</h1>
+            <p>Scopriamo insieme i segreti dei numeri!</p>
+        </header>
+        
+        <!-- Navigazione a Tab -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="mostraTab('tab1')">Il Magico 37</button>
+            <button class="tab-button" onclick="mostraTab('tab2')">Il Numero 3087</button>
+            <button class="tab-button" onclick="mostraTab('tab3')">Il Numero 1089</button>
+            <button class="tab-button" onclick="mostraTab('tab4')">Il Numero Ripetuto</button>
+            <button class="tab-button" onclick="mostraTab('tab5')">Il Magico 9</button>
+            <button class="tab-button" onclick="mostraTab('tab6')">Calcolo Pedestre</button>
+            <button class="tab-button" onclick="mostraTab('tab7')">La Carta Parlante</button>
+            <button class="tab-button" onclick="mostraTab('tab8')">Magia Ciclica</button>
+            <button class="tab-button" onclick="mostraTab('tab9')">Locanda 4 Cantoni</button>
+            <button class="tab-button" onclick="mostraTab('tab10')">Le Coppie Reali</button>
+        </div>
+        
+        <!-- TAB 1: Il Magico 37 -->
+        <div id="tab1" class="tab-content active">
+            <div class="gioco-card">
+                <h2>🎯 Il Magico Numero 37</h2>
+                
+                <div class="introduzione">
+                    <strong>Cari ragazzi,</strong> oggi scopriremo insieme un trucco matematico sorprendente! 
+                    Vi farò vedere come, partendo da qualsiasi numero con tre cifre uguali, 
+                    arriveremo sempre allo stesso risultato finale. Pronti? Seguite attentamente ogni passo!
+                </div>
+                
+                <div id="passo1-1" class="passo">
+                    <h3><span class="passo-numero">1</span> Scegliete un numero</h3>
+                    <p>Ciascuno di voi pensi a un numero composto da <strong>tre cifre uguali</strong>.</p>
+                    <div class="esempio">
+                        <strong>Esempi possibili:</strong><br>
+                        • 111 (tre volte l'1)<br>
+                        • 333 (tre volte il 3)<br>
+                        • 555 (tre volte il 5)<br>
+                        • 777 (tre volte il 7)<br>
+                        • 999 (tre volte il 9)
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em;">📝 <strong>Per questo esempio useremo: 333</strong></p>
+                </div>
+                
+                <div id="passo1-2" class="passo">
+                    <h3><span class="passo-numero">2</span> Sommate le tre cifre</h3>
+                    <p>Ora dovete <strong>sommare le tre cifre</strong> del vostro numero.</p>
+                    <div class="esempio">
+                        <strong>Con il numero 333:</strong><br>
+                        Le tre cifre sono: 3, 3, 3<br>
+                        Somma: $3 + 3 + 3 = 9$
+                    </div>
+                    <p style="margin-top: 15px;">✏️ <strong>Ognuno di voi faccia questa operazione con il proprio numero!</strong></p>
+                </div>
+                
+                <div id="passo1-3" class="passo">
+                    <h3><span class="passo-numero">3</span> Dividete il numero per la somma</h3>
+                    <p>Adesso viene la parte importante: <strong>dividete il numero originale per la somma che avete appena calcolato</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con il nostro esempio:</strong><br>
+                        Numero originale: 333<br>
+                        Somma delle cifre: 9<br>
+                        Divisione: $333 \div 9 = ?$
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.15em;">🤔 <strong>Secondo voi, che risultato otterremo?</strong></p>
+                </div>
+                
+                <div id="risultato1" class="risultato">
+                    <h4>✨ IL RISULTATO MAGICO! ✨</h4>
+                    <p style="font-size: 1.5em; margin: 20px 0;">
+                        Il risultato è sempre: <span class="evidenziato">37</span>
+                    </p>
+                    <p>Nel nostro esempio: $333 \div 9 = 37$</p>
+                    <p style="margin-top: 20px; font-size: 1.1em;">
+                        🎉 <strong>Provate con qualsiasi numero di tre cifre uguali: otterrete sempre 37!</strong>
+                    </p>
+                </div>
+                
+                <div id="spiegazione1" class="spiegazione">
+                    <h3>🔬 PERCHÉ FUNZIONA?</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, ora vi svelo il segreto matematico dietro questo trucco! 
+                        Preparatevi a scoprire la magia della matematica!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🧮 Il Segreto del Numero</h4>
+                        <p>Un numero composto da tre cifre uguali "a" può essere scritto così:</p>
+                        <div class="formula">
+                            $n = 100a + 10a + a = 111a$
+                        </div>
+                        <p><strong>Esempio:</strong> Se la cifra è 3, allora: $111 \times 3 = 333$</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">➕ La Somma delle Cifre</h4>
+                        <p>La somma delle tre cifre è semplicemente:</p>
+                        <div class="formula">
+                            $a + a + a = 3a$
+                        </div>
+                        <p><strong>Esempio:</strong> Con la cifra 3: $3 + 3 + 3 = 9 = 3 \times 3$</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">➗ La Divisione Magica</h4>
+                        <p>Quando dividiamo il numero per la somma delle cifre:</p>
+                        <div class="formula">
+                            $$\frac{111a}{3a} = \frac{111}{3} = 37$$
+                        </div>
+                        <p style="margin-top: 15px;">
+                            👁️ <strong>Notate:</strong> La "a" si semplifica! Per questo il risultato è sempre 37, 
+                            qualunque sia la cifra che abbiamo scelto all'inizio!
+                        </p>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 In sintesi:</strong> Il trucco funziona perché stiamo sempre dividendo 111 per 3, 
+                        indipendentemente dalla cifra scelta. E 111 ÷ 3 = 37!
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(1, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(1)" id="btnProssimo1" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(1)" id="btnRisultato1" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(1)" id="btnSegreto1" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(1)" id="btnReset1" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 2: Il Numero 3087 -->
+        <div id="tab2" class="tab-content">
+            <div class="gioco-card">
+                <h2>🎯 Il Misterioso Numero 3087</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> questo è uno dei miei trucchi preferiti! 
+                    Partiremo da un numero qualsiasi di quattro cifre e, attraverso alcune operazioni, 
+                    arriveremo sempre allo stesso risultato sorprendente. 
+                    Preparate carta e penna, sarà divertente!
+                </div>
+                
+                <div id="passo2-1" class="passo">
+                    <h3><span class="passo-numero">1</span> Scegliete un numero speciale</h3>
+                    <p>Pensate a un numero di <strong>quattro cifre in ordine decrescente</strong> 
+                    (cioè ogni cifra deve essere più piccola della precedente).</p>
+                    <div class="esempio">
+                        <strong>Esempi validi:</strong><br>
+                        • 5432 (5 > 4 > 3 > 2) ✅<br>
+                        • 9876 (9 > 8 > 7 > 6) ✅<br>
+                        • 8520 (8 > 5 > 2 > 0) ✅<br>
+                        • 7531 (7 > 5 > 3 > 1) ✅
+                    </div>
+                    <div class="nota">
+                        <strong>⚠️ Attenzione:</strong> Le cifre devono essere diverse tra loro e in ordine decrescente!
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em;">📝 <strong>Per questo esempio useremo: 5432</strong></p>
+                </div>
+                
+                <div id="passo2-2" class="passo">
+                    <h3><span class="passo-numero">2</span> Ribaltate il numero</h3>
+                    <p>Ora <strong>scrivete le cifre del vostro numero al contrario</strong>. 
+                    In pratica, leggetelo da destra verso sinistra!</p>
+                    <div class="esempio">
+                        <strong>Con il numero 5432:</strong><br>
+                        • Numero originale: 5432<br>
+                        • Numero ribaltato: 2345
+                    </div>
+                    <p style="margin-top: 15px;">✏️ <strong>Che numero ottieni ribaltando il tuo?</strong></p>
+                </div>
+                
+                <div id="passo2-3" class="passo">
+                    <h3><span class="passo-numero">3</span> Fate la sottrazione</h3>
+                    <p>Adesso <strong>sottraete il numero più piccolo dal numero più grande</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con i nostri numeri:</strong><br>
+                        • Numero grande: 5432<br>
+                        • Numero piccolo: 2345<br>
+                        • Sottrazione: $5432 - 2345 = ?$
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.15em;">
+                        🧮 <strong>Fate questa sottrazione con attenzione!</strong>
+                    </p>
+                </div>
+                
+                <div id="risultato2" class="risultato">
+                    <h4>✨ INCREDIBILE! ✨</h4>
+                    <p style="font-size: 1.5em; margin: 20px 0;">
+                        Il risultato è sempre: <span class="evidenziato">3087</span>
+                    </p>
+                    <p>Nel nostro esempio: $5432 - 2345 = 3087$</p>
+                    <p style="margin-top: 20px; font-size: 1.1em;">
+                        🎉 <strong>Qualunque numero di quattro cifre decrescenti scegliate, otterrete sempre 3087!</strong>
+                    </p>
+                </div>
+                
+                <div id="spiegazione2" class="spiegazione">
+                    <h3>🔬 IL SEGRETO MATEMATICO</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, preparatevi perché questa dimostrazione è un po' più complessa, 
+                        ma è bellissima! Vi mostrerò come la matematica può prevedere tutto!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔢 Rappresentiamo il Numero Decrescente</h4>
+                        <p>Chiamiamo le quattro cifre: $(a+3), (a+2), (a+1), a$ 
+                        (questo garantisce che siano decrescenti)</p>
+                        <div class="formula">
+                            $n = 1000(a+3) + 100(a+2) + 10(a+1) + a$
+                        </div>
+                        <p><strong>Esempio:</strong> Per 5432 → a = 2, quindi: (2+3), (2+2), (2+1), 2 = 5, 4, 3, 2 ✅</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔄 Il Numero Ribaltato</h4>
+                        <p>Quando ribaltiamo le cifre, otteniamo:</p>
+                        <div class="formula">
+                            $n' = 1000a + 100(a+1) + 10(a+2) + (a+3)$
+                        </div>
+                        <p><strong>Esempio:</strong> 2, 3, 4, 5 → 2345</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">➖ La Magia della Sottrazione</h4>
+                        <p>Facciamo la differenza $n - n'$ (assumendo $n > n'$):</p>
+                        <div class="formula">
+                            $$\begin{align}
+                            n - n' &= [1000(a+3) + 100(a+2) + 10(a+1) + a] - \\
+                            &\quad [1000a + 100(a+1) + 10(a+2) + (a+3)]
+                            \end{align}$$
+                        </div>
+                        <p>Raggruppando i termini:</p>
+                        <div class="formula">
+                            $$\begin{align}
+                            n - n' &= 1000(a+3-a) + 100(a+2-a-1) + \\
+                            &\quad 10(a+1-a-2) + (a-a-3)\\
+                            &= 1000 \times 3 + 100 \times 1 + 10 \times (-1) - 3\\
+                            &= 3000 + 100 - 10 - 3 = 3087
+                            \end{align}$$
+                        </div>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 La Magia:</strong> Guardate come tutte le "a" si cancellano! 
+                        Questo significa che il risultato non dipende dal numero scelto, ma solo dalla struttura decrescente. 
+                        Otterremo sempre: 3000 + 100 - 10 - 3 = <strong>3087</strong>!
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(2, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(2)" id="btnProssimo2" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(2)" id="btnRisultato2" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(2)" id="btnSegreto2" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(2)" id="btnReset2" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 3: Il Numero 1089 -->
+        <div id="tab3" class="tab-content">
+            <div class="gioco-card">
+                <h2>🎯 Il Leggendario 1089</h2>
+                
+                <div class="introduzione">
+                    <strong>Cari ragazzi,</strong> questo è forse il trucco matematico più famoso al mondo! 
+                    Attraverso una serie di operazioni apparentemente casuali, arriveremo tutti allo stesso numero. 
+                    È il preferito dei maghi matematici!
+                </div>
+                
+                <div id="passo3-1" class="passo">
+                    <h3><span class="passo-numero">1</span> Pensate a un numero di tre cifre</h3>
+                    <p>Scegliete un numero di tre cifre, ma <strong>la prima e l'ultima cifra devono essere diverse</strong>!</p>
+                    <div class="esempio">
+                        <strong>Esempi validi:</strong><br>
+                        • 377 (prima cifra: 3, ultima: 7 → diverse ✅)<br>
+                        • 825 (prima cifra: 8, ultima: 5 → diverse ✅)<br>
+                        • 901 (prima cifra: 9, ultima: 1 → diverse ✅)
+                    </div>
+                    <div class="nota">
+                        <strong>⚠️ Non valido:</strong> 555 (prima e ultima cifra uguali ❌)
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em;">📝 <strong>Per questo esempio useremo: 377</strong></p>
+                </div>
+                
+                <div id="passo3-2" class="passo">
+                    <h3><span class="passo-numero">2</span> Ribaltate le cifre</h3>
+                    <p><strong>Scrivete il numero al contrario</strong>, invertendo l'ordine delle cifre.</p>
+                    <div class="esempio">
+                        <strong>Con il numero 377:</strong><br>
+                        • Numero originale: 377<br>
+                        • Numero ribaltato: 773
+                    </div>
+                </div>
+                
+                <div id="passo3-3" class="passo">
+                    <h3><span class="passo-numero">3</span> Sottraete il minore dal maggiore</h3>
+                    <p><strong>Confrontate i due numeri e sottraete il più piccolo dal più grande</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con i nostri numeri:</strong><br>
+                        • Primo numero: 377<br>
+                        • Secondo numero: 773<br>
+                        • Il maggiore è 773<br>
+                        • Sottrazione: $773 - 377 = 396$
+                    </div>
+                    <div class="nota">
+                        <strong>💡 Importante:</strong> Se il risultato ha solo DUE cifre, 
+                        aggiungi uno zero davanti! Esempio: 99 → 099
+                    </div>
+                </div>
+                
+                <div id="passo3-4" class="passo">
+                    <h3><span class="passo-numero">4</span> Ribaltate di nuovo</h3>
+                    <p>Prendete il risultato appena ottenuto e <strong>ribaltatelo</strong>!</p>
+                    <div class="esempio">
+                        <strong>Con il nostro risultato 396:</strong><br>
+                        • Numero da ribaltare: 396<br>
+                        • Numero ribaltato: 693
+                    </div>
+                </div>
+                
+                <div id="passo3-5" class="passo">
+                    <h3><span class="passo-numero">5</span> Sommate gli ultimi due numeri</h3>
+                    <p><strong>Addizionate il risultato del passo 3 con quello del passo 4</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con i nostri numeri:</strong><br>
+                        • Primo numero: 396<br>
+                        • Secondo numero: 693<br>
+                        • Somma: $396 + 693 = ?$
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.15em;">🤔 <strong>Secondo voi, cosa otterremo?</strong></p>
+                </div>
+                
+                <div id="risultato3" class="risultato">
+                    <h4>✨ IL NUMERO LEGGENDARIO! ✨</h4>
+                    <p style="font-size: 1.5em; margin: 20px 0;">
+                        Il risultato è sempre: <span class="evidenziato">1089</span>
+                    </p>
+                    <p>Nel nostro esempio: $396 + 693 = 1089$</p>
+                    <p style="margin-top: 20px; font-size: 1.1em;">
+                        🎉 <strong>Qualunque numero di partenza (con prima e ultima cifra diverse), otterrete SEMPRE 1089!</strong>
+                    </p>
+                </div>
+                
+                <div id="spiegazione3" class="spiegazione">
+                    <h3>🔬 IL MISTERO SVELATO</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, questo è uno dei trucchi più affascinanti! 
+                        Scopriremo perché il 1089 appare sempre, grazie alla magia dei multipli di 99!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔢 Il Numero di Partenza</h4>
+                        <p>Un numero di tre cifre $a, b, c$ (con $a \neq c$) si scrive:</p>
+                        <div class="formula">
+                            $n = 100a + 10b + c$
+                        </div>
+                        <p><strong>Esempio:</strong> 377 → $100 \times 3 + 10 \times 7 + 7 = 377$</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔄 Dopo il Ribaltamento</h4>
+                        <p>Il numero ribaltato è:</p>
+                        <div class="formula">
+                            $n' = 100c + 10b + a$
+                        </div>
+                        <p><strong>Esempio:</strong> 773 → $100 \times 7 + 10 \times 7 + 3 = 773$</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">➖ La Prima Differenza</h4>
+                        <p>Supponendo $n > n'$, la differenza è:</p>
+                        <div class="formula">
+                            $$\begin{align}
+                            n - n' &= (100a + 10b + c) - (100c + 10b + a)\\
+                            &= 100(a-c) - (a-c)\\
+                            &= 99(a-c)
+                            \end{align}$$
+                        </div>
+                        <p><strong>Scoperta importante:</strong> Il risultato è sempre un multiplo di 99!</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">📊 Tutti i Possibili Risultati</h4>
+                        <p>Dato che $(a-c)$ può essere da 1 a 9, ecco tutti i possibili valori:</p>
+                        <table class="tabella">
+                            <tr>
+                                <th>$99 \times 1$</th>
+                                <th>$99 \times 2$</th>
+                                <th>$99 \times 3$</th>
+                                <th>$99 \times 4$</th>
+                                <th>$99 \times 5$</th>
+                            </tr>
+                            <tr>
+                                <td>099</td>
+                                <td>198</td>
+                                <td>297</td>
+                                <td>396</td>
+                                <td>495</td>
+                            </tr>
+                        </table>
+                        <table class="tabella" style="margin-top: 10px;">
+                            <tr>
+                                <th>$99 \times 6$</th>
+                                <th>$99 \times 7$</th>
+                                <th>$99 \times 8$</th>
+                                <th>$99 \times 9$</th>
+                            </tr>
+                            <tr>
+                                <td>594</td>
+                                <td>693</td>
+                                <td>792</td>
+                                <td>891</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">✨ La Magia Finale</h4>
+                        <p>Ecco il segreto: quando ribalti $99 \times k$ ottieni $99 \times (11-k)$!</p>
+                        <div class="esempio">
+                            <strong>Esempi:</strong><br>
+                            • 396 (che è $99 \times 4$) ribaltato → 693 (che è $99 \times 7$, e 7 = 11-4)<br>
+                            • 198 (che è $99 \times 2$) ribaltato → 891 (che è $99 \times 9$, e 9 = 11-2)
+                        </div>
+                        <p style="margin-top: 15px;">Sommando:</p>
+                        <div class="formula">
+                            $$99k + 99(11-k) = 99 \times 11 = 1089$$
+                        </div>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 Conclusione:</strong> Non importa quale numero scegliete all'inizio! 
+                        La struttura matematica garantisce che sommerete sempre due multipli di 99 che 
+                        insieme fanno $99 \times 11 = 1089$!
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(3, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(3)" id="btnProssimo3" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(3)" id="btnRisultato3" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(3)" id="btnSegreto3" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(3)" id="btnReset3" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 4: Il Numero Ripetuto -->
+        <div id="tab4" class="tab-content">
+            <div class="gioco-card">
+                <h2>🎯 Il Numero Ripetuto</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> questo trucco vi stupirà! Prenderemo un numero qualsiasi di tre cifre, 
+                    lo ripeteremo, faremo alcune divisioni e... torneremo esattamente al numero di partenza! 
+                    Sembra impossibile, vero? Vediamo!
+                </div>
+                
+                <div id="passo4-1" class="passo">
+                    <h3><span class="passo-numero">1</span> Scegliete un numero qualsiasi</h3>
+                    <p>Pensate a un <strong>numero di tre cifre</strong>, quello che volete!</p>
+                    <div class="esempio">
+                        <strong>Esempi possibili:</strong><br>
+                        • 123<br>
+                        • 345<br>
+                        • 789<br>
+                        • 256<br>
+                        • Qualsiasi altro numero di tre cifre!
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em;">📝 <strong>Per questo esempio useremo: 345</strong></p>
+                </div>
+                
+                <div id="passo4-2" class="passo">
+                    <h3><span class="passo-numero">2</span> Ripetete il numero</h3>
+                    <p><strong>Riscrivete le stesse tre cifre di seguito alle prime</strong>, 
+                    creando un numero di sei cifre!</p>
+                    <div class="esempio">
+                        <strong>Con il numero 345:</strong><br>
+                        • Numero originale: 345<br>
+                        • Numero ripetuto: <strong style="font-size: 1.3em;">345345</strong>
+                    </div>
+                    <p style="margin-top: 15px;">📝 <strong>Se avete scelto 123, scrivete 123123. Se avete 789, scrivete 789789, ecc.</strong></p>
+                </div>
+                
+                <div id="passo4-3" class="passo">
+                    <h3><span class="passo-numero">3</span> Dividete per 7</h3>
+                    <p>Prendete il numero di sei cifre e <strong>dividetelo per 7</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con il nostro numero:</strong><br>
+                        $345345 \div 7 = 49335$
+                    </div>
+                    <div class="nota">
+                        <strong>✨ Magia n°1:</strong> La divisione è sempre esatta! Non ci sono resti!
+                    </div>
+                </div>
+                
+                <div id="passo4-4" class="passo">
+                    <h3><span class="passo-numero">4</span> Dividete per 11</h3>
+                    <p>Prendete il risultato appena ottenuto e <strong>dividetelo per 11</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con il nostro risultato:</strong><br>
+                        $49335 \div 11 = 4485$
+                    </div>
+                    <div class="nota">
+                        <strong>✨ Magia n°2:</strong> Anche questa divisione è esatta!
+                    </div>
+                </div>
+                
+                <div id="passo4-5" class="passo">
+                    <h3><span class="passo-numero">5</span> Dividete per 13</h3>
+                    <p>Ultima operazione: <strong>dividete il risultato per 13</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con il nostro risultato:</strong><br>
+                        $4485 \div 13 = ?$
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.15em;">🤔 <strong>Secondo voi, cosa otterremo?</strong></p>
+                </div>
+                
+                <div id="risultato4" class="risultato">
+                    <h4>✨ SIAMO TORNATI ALL'INIZIO! ✨</h4>
+                    <p style="font-size: 1.5em; margin: 20px 0;">
+                        Il risultato finale è: <span class="evidenziato">345</span>
+                    </p>
+                    <p>$4485 \div 13 = 345$ (il numero iniziale!)</p>
+                    <p style="margin-top: 20px; font-size: 1.1em;">
+                        🎉 <strong>Dopo tre divisioni, siamo tornati esattamente al numero di partenza!</strong>
+                    </p>
+                </div>
+                
+                <div id="spiegazione4" class="spiegazione">
+                    <h3>🔬 IL SEGRETO DEL 1001</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, questo trucco si basa su un numero speciale: il <strong>1001</strong>! 
+                        Scopriamo insieme perché è così magico!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔢 Cosa Succede Quando Ripetiamo il Numero?</h4>
+                        <p>Quando prendiamo un numero "abc" e lo ripetiamo, otteniamo "abcabc".</p>
+                        <p>Questo può essere scritto come:</p>
+                        <div class="formula">
+                            $\text{abcabc} = 1000 \times \text{abc} + \text{abc} = 1001 \times \text{abc}$
+                        </div>
+                        <div class="esempio">
+                            <strong>Con il nostro esempio:</strong><br>
+                            345345 = 1000 × 345 + 345 = 1001 × 345
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🎯 Il Numero Magico 1001</h4>
+                        <p>Ora viene la parte fantastica! Il numero 1001 ha una proprietà speciale:</p>
+                        <div class="formula">
+                            $1001 = 7 \times 11 \times 13$
+                        </div>
+                        <p>Verifichiamo:</p>
+                        <div class="esempio">
+                            $7 \times 11 = 77$<br>
+                            $77 \times 13 = 1001$ ✅
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">✨ Perché Torniamo al Numero Iniziale</h4>
+                        <p>Ora mettiamo tutto insieme:</p>
+                        <div class="formula">
+                            $$\frac{1001 \times \text{abc}}{7 \times 11 \times 13} = \frac{1001 \times \text{abc}}{1001} = \text{abc}$$
+                        </div>
+                        <p style="margin-top: 15px;">Con il nostro esempio completo:</p>
+                        <div class="esempio">
+                            Passo 1: $345345 = 1001 \times 345$<br>
+                            Passo 2: $345345 \div 7 = \frac{1001 \times 345}{7} = 143 \times 345 = 49335$<br>
+                            Passo 3: $49335 \div 11 = \frac{143 \times 345}{11} = 13 \times 345 = 4485$<br>
+                            Passo 4: $4485 \div 13 = \frac{13 \times 345}{13} = 345$ ✨
+                        </div>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 In pratica:</strong> Quando ripetiamo il numero, lo moltiplichiamo per 1001. 
+                        Poi, dividendo successivamente per 7, 11 e 13 (che moltiplicati fanno proprio 1001), 
+                        "cancelliamo" quel fattore e torniamo al numero originale!<br><br>
+                        <strong>È come moltiplicare per 1001 e poi dividere per 1001!</strong>
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(4, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(4)" id="btnProssimo4" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(4)" id="btnRisultato4" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(4)" id="btnSegreto4" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(4)" id="btnReset4" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 5: Il Magico 9 -->
+        <div id="tab5" class="tab-content">
+            <div class="gioco-card">
+                <h2>🎯 Il Magico Numero 9</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> ora vi mostrerò un trucco da veri mentalisti! 
+                    Prima di iniziare, scriverò una previsione segreta in una busta sigillata. 
+                    Poi ognuno di voi sceglierà un numero diverso, farà delle operazioni... 
+                    e alla fine tutti otterrete lo stesso risultato che ho previsto! Pronti?
+                </div>
+                
+                <div id="passo5-1" class="passo">
+                    <h3><span class="passo-numero">📩</span> La Previsione Segreta</h3>
+                    <p><strong>ATTENZIONE:</strong> Prima di iniziare, l'insegnante scriverà il numero <span class="evidenziato">9</span> 
+                    su un foglio, lo piegherà e lo metterà in una busta sigillata sulla cattedra.</p>
+                    <div class="nota">
+                        <strong>🔒 Importante:</strong> Nessuno deve vedere cosa c'è scritto fino alla fine!
+                    </div>
+                </div>
+                
+                <div id="passo5-2" class="passo">
+                    <h3><span class="passo-numero">1</span> Pensate a un numero di due cifre</h3>
+                    <p>Ciascuno di voi <strong>scelga un numero qualsiasi di due cifre</strong> 
+                    (da 10 a 99). Potete scegliere tutti numeri diversi!</p>
+                    <div class="esempio">
+                        <strong>Alcuni esempi:</strong><br>
+                        • Marco sceglie: 85<br>
+                        • Sara sceglie: 42<br>
+                        • Luca sceglie: 73<br>
+                        • Anna sceglie: 28
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em;">
+                        📝 <strong>Per seguire insieme, useremo: 85</strong>
+                    </p>
+                </div>
+                
+                <div id="passo5-3" class="passo">
+                    <h3><span class="passo-numero">2</span> Sommate le due cifre</h3>
+                    <p><strong>Prendete le due cifre del vostro numero e sommatele</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con il numero 85:</strong><br>
+                        • Prima cifra: 8<br>
+                        • Seconda cifra: 5<br>
+                        • Somma: $8 + 5 = 13$
+                    </div>
+                    <p style="margin-top: 15px;">✏️ <strong>Ognuno faccia questa somma con il proprio numero!</strong></p>
+                </div>
+                
+                <div id="passo5-4" class="passo">
+                    <h3><span class="passo-numero">3</span> Sottraete dal numero originale</h3>
+                    <p><strong>Prendete il numero che avete scelto all'inizio e sottraete la somma appena calcolata</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con i nostri numeri:</strong><br>
+                        • Numero originale: 85<br>
+                        • Somma delle cifre: 13<br>
+                        • Sottrazione: $85 - 13 = 72$
+                    </div>
+                </div>
+                
+                <div id="passo5-5" class="passo">
+                    <h3><span class="passo-numero">4</span> Se necessario, sommate ancora</h3>
+                    <p><strong>Se il vostro risultato ha DUE cifre, sommatele tra loro</strong>. 
+                    Se ha una sola cifra, siete già pronti!</p>
+                    <div class="esempio">
+                        <strong>Con il nostro risultato 72:</strong><br>
+                        • Ha due cifre: 7 e 2<br>
+                        • Somma finale: $7 + 2 = ?$
+                    </div>
+                </div>
+                
+                <div id="risultato5" class="risultato">
+                    <h4>✨ LA PREVISIONE SI AVVERA! ✨</h4>
+                    <p style="font-size: 1.5em; margin: 20px 0;">
+                        Tutti voi avete ottenuto: <span class="evidenziato">9</span>
+                    </p>
+                    <p>Nel nostro esempio: $7 + 2 = 9$</p>
+                    <p style="margin-top: 20px; font-size: 1.2em;">
+                        🎉 <strong>Ora aprite la busta sigillata...</strong>
+                    </p>
+                    <p style="font-size: 1.4em; margin-top: 15px; color: #ffd700;">
+                        📩 Nella busta c'è scritto esattamente: <span class="evidenziato">9</span>!
+                    </p>
+                    <p style="margin-top: 15px;">
+                        Anche se ognuno di voi ha scelto un numero diverso, avete tutti ottenuto lo stesso risultato che era stato previsto!
+                    </p>
+                </div>
+                
+                <div id="spiegazione5" class="spiegazione">
+                    <h3>🔬 IL SEGRETO DEL 9</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, questo trucco funziona grazie a una proprietà speciale del numero 9! 
+                        Vediamo perché ottenete tutti lo stesso risultato!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔢 Rappresentiamo un Numero di Due Cifre</h4>
+                        <p>Un numero di due cifre con $x$ decine e $y$ unità si scrive matematicamente:</p>
+                        <div class="formula">
+                            $n = 10x + y$
+                        </div>
+                        <div class="esempio">
+                            <strong>Esempio con 85:</strong><br>
+                            $x = 8$ (decine), $y = 5$ (unità)<br>
+                            $n = 10 \times 8 + 5 = 80 + 5 = 85$ ✅
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">➖ Cosa Succede con la Sottrazione?</h4>
+                        <p>Quando sottraiamo la somma delle cifre dal numero:</p>
+                        <div class="formula">
+                            $$\begin{align}
+                            n - (x + y) &= (10x + y) - (x + y)\\
+                            &= 10x + y - x - y\\
+                            &= 9x
+                            \end{align}$$
+                        </div>
+                        <div class="esempio">
+                            <strong>Con il nostro esempio:</strong><br>
+                            $85 - (8+5) = 85 - 13 = 72 = 9 \times 8$ ✅
+                        </div>
+                        <p style="margin-top: 15px; color: #d32f2f; font-weight: bold;">
+                            🎯 Il risultato è SEMPRE un multiplo di 9!
+                        </p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">✨ La Proprietà Magica del 9</h4>
+                        <p><strong>Criterio di divisibilità per 9:</strong> 
+                        La somma delle cifre di un multiplo di 9 è sempre 9 (o un multiplo di 9)!</p>
+                        
+                        <table class="tabella">
+                            <tr>
+                                <th>Multiplo di 9</th>
+                                <th>Cifre</th>
+                                <th>Somma cifre</th>
+                            </tr>
+                            <tr>
+                                <td>$9 \times 1 = 9$</td>
+                                <td>9</td>
+                                <td>9</td>
+                            </tr>
+                            <tr>
+                                <td>$9 \times 2 = 18$</td>
+                                <td>1, 8</td>
+                                <td>$1+8 = 9$</td>
+                            </tr>
+                            <tr>
+                                <td>$9 \times 3 = 27$</td>
+                                <td>2, 7</td>
+                                <td>$2+7 = 9$</td>
+                            </tr>
+                            <tr>
+                                <td>$9 \times 4 = 36$</td>
+                                <td>3, 6</td>
+                                <td>$3+6 = 9$</td>
+                            </tr>
+                            <tr>
+                                <td>$9 \times 8 = 72$</td>
+                                <td>7, 2</td>
+                                <td>$7+2 = 9$</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 Il Trucco Completo:</strong><br>
+                        1. Qualunque numero di due cifre scegliete, sottraendo la somma delle cifre ottenete un multiplo di 9<br>
+                        2. I multipli di 9 possibili sono: 9, 18, 27, 36, 45, 54, 63, 72, 81<br>
+                        3. Sommando le cifre di questi numeri si ottiene SEMPRE 9!<br>
+                        4. Ecco perché, partendo da numeri diversi, arrivate tutti al 9!
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(5, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(5)" id="btnProssimo5" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(5)" id="btnRisultato5" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(5)" id="btnSegreto5" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(5)" id="btnReset5" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 6: Calcolo Pedestre -->
+        <div id="tab6" class="tab-content">
+            <div class="gioco-card">
+                <h2>👟 Un Calcolo "Pedestre"</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> questo è un trucco da veri mentalisti! 
+                    Senza farvi domande dirette, riuscirò a indovinare due cose su di voi: 
+                    il vostro numero di scarpe e la vostra età! Tutto grazie alla matematica!
+                </div>
+                
+                <div id="passo6-1" class="passo">
+                    <h3><span class="passo-numero">1</span> Pensate al vostro numero di scarpe</h3>
+                    <p><strong>Scrivete il vostro numero di scarpe</strong> (se portate mezze misure, arrotondate per difetto).</p>
+                    <div class="esempio">
+                        <strong>Esempi:</strong><br>
+                        • Se porti il 38,5 → scrivi 38<br>
+                        • Se porti il 42 → scrivi 42<br>
+                        • Se porti il 39 → scrivi 39
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em;">
+                        📝 <strong>Per questo esempio useremo: 39</strong>
+                    </p>
+                </div>
+                
+                <div id="passo6-2" class="passo">
+                    <h3><span class="passo-numero">2</span> Moltiplicate per 100</h3>
+                    <p><strong>Prendete il numero di scarpe e moltiplicatelo per 100</strong>.</p>
+                    <div class="esempio">
+                        <strong>Con il numero 39:</strong><br>
+                        $39 \times 100 = 3900$
+                    </div>
+                    <div class="nota">
+                        <strong>💡 Trucco veloce:</strong> Moltiplicare per 100 significa aggiungere due zeri!
+                    </div>
+                </div>
+                
+                <div id="passo6-3" class="passo">
+                    <h3><span class="passo-numero">3</span> Sottraete il vostro anno di nascita</h3>
+                    <p><strong>Dal risultato ottenuto, sottraete l'anno in cui siete nati</strong>.</p>
+                    <div class="esempio">
+                        <strong>Supponiamo anno di nascita: 2009</strong><br>
+                        $3900 - 2009 = 1891$
+                    </div>
+                    <p style="margin-top: 15px;">✏️ <strong>Fate questo calcolo con il vostro vero anno di nascita!</strong></p>
+                </div>
+                
+                <div id="passo6-4" class="passo">
+                    <h3><span class="passo-numero">4</span> Comunicatemi il risultato</h3>
+                    <p><strong>Alzate la mano e ditemi ad alta voce il numero che avete ottenuto</strong>.</p>
+                    <div class="esempio">
+                        <strong>Nel nostro esempio il risultato è:</strong> 1891
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.15em;">
+                        🎯 <strong>L'insegnante farà un calcolo mentale velocissimo...</strong>
+                    </p>
+                </div>
+                
+                <div id="risultato6" class="risultato">
+                    <h4>✨ INDOVINO TUTTO DI VOI! ✨</h4>
+                    <p style="font-size: 1.3em; margin: 20px 0;">
+                        <strong>Come fa l'insegnante:</strong><br>
+                        Somma mentalmente il vostro risultato (1891) con l'anno corrente (2024):
+                    </p>
+                    <div class="formula">
+                        $1891 + 2024 = 3915$
+                    </div>
+                    <p style="font-size: 1.4em; margin: 20px 0;">
+                        📊 <strong>Leggendo questo numero:</strong>
+                    </p>
+                    <div style="background: white; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                        <p style="font-size: 1.5em; color: #667eea;">
+                            <strong>Prime due cifre (39):</strong> Numero di scarpe! 👟
+                        </p>
+                        <p style="font-size: 1.5em; color: #764ba2; margin-top: 15px;">
+                            <strong>Ultime due cifre (15):</strong> Età! 🎂
+                        </p>
+                    </div>
+                    <p style="margin-top: 20px; font-size: 1.1em;">
+                        🎉 <strong>Portate il 39 di scarpe e avete 15 anni (o li compirete quest'anno)!</strong>
+                    </p>
+                </div>
+                
+                <div id="spiegazione6" class="spiegazione">
+                    <h3>🔬 COME FUNZIONA IL TRUCCO</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, questo è uno dei trucchi più eleganti! Scopriamo come la matematica 
+                        può rivelare informazioni personali partendo da semplici calcoli!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">📐 Le Variabili in Gioco</h4>
+                        <p>Chiamiamo:</p>
+                        <ul>
+                            <li>$s$ = numero di scarpe (nel nostro caso: 39)</li>
+                            <li>$a$ = anno di nascita (nel nostro caso: 2009)</li>
+                            <li>$c$ = anno corrente (2024)</li>
+                            <li>$e$ = età = $c - a$</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🧮 Il Calcolo che Fate Voi</h4>
+                        <p>Seguendo le istruzioni, calcolate:</p>
+                        <div class="formula">
+                            $n = s \times 100 - a$
+                        </div>
+                        <div class="esempio">
+                            <strong>Con i nostri dati:</strong><br>
+                            $n = 39 \times 100 - 2009 = 3900 - 2009 = 1891$
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">✨ Il Calcolo Segreto dell'Insegnante</h4>
+                        <p>L'insegnante aggiunge l'anno corrente al vostro risultato:</p>
+                        <div class="formula">
+                            $$\begin{align}
+                            r &= n + c\\
+                            &= (s \times 100 - a) + c\\
+                            &= s \times 100 + (c - a)\\
+                            &= s \times 100 + e
+                            \end{align}$$
+                        </div>
+                        <div class="esempio">
+                            <strong>Con i nostri numeri:</strong><br>
+                            $r = 1891 + 2024 = 3915$<br>
+                            $r = 39 \times 100 + 15$<br>
+                            dove 15 = 2024 - 2009 (l'età!)
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🎯 Perché Funziona</h4>
+                        <p>Il risultato finale è nella forma: $r = s \times 100 + e$</p>
+                        <p>Poiché sia $s$ (scarpe) che $e$ (età) sono numeri a due cifre, 
+                        possiamo scrivere il risultato come:</p>
+                        <div class="formula" style="font-size: 1.5em;">
+                            $r = \overline{se}$
+                        </div>
+                        <p style="margin-top: 15px;">Dove:</p>
+                        <ul>
+                            <li><strong>Prime due cifre:</strong> numero di scarpe</li>
+                            <li><strong>Ultime due cifre:</strong> età</li>
+                        </ul>
+                        
+                        <div class="esempio" style="margin-top: 20px;">
+                            <strong>Esempio pratico di come si "leggono" i numeri:</strong><br><br>
+                            • Se il risultato è 3915 → Scarpe: 39, Età: 15<br>
+                            • Se il risultato è 4212 → Scarpe: 42, Età: 12<br>
+                            • Se il risultato è 3616 → Scarpe: 36, Età: 16
+                        </div>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 In sintesi:</strong> Moltiplicando le scarpe per 100, le "spostiamo" 
+                        nelle prime due cifre del risultato. L'età finisce automaticamente nelle ultime due cifre 
+                        quando aggiungiamo l'anno corrente! È come creare un codice segreto dove ogni informazione 
+                        ha la sua posizione precisa!
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(6, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(6)" id="btnProssimo6" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(6)" id="btnRisultato6" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(6)" id="btnSegreto6" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(6)" id="btnReset6" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 7: La Carta Parlante -->
+        <div id="tab7" class="tab-content">
+            <div class="gioco-card">
+                <h2>🎴 La Carta Parlante</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> questo è un trucco spettacolare con le carte! 
+                    Disporrò 10 carte in fila, uno di voi le mescolerà senza che io veda, 
+                    e poi io indovinerò quante carte ha spostato semplicemente guardando UNA carta! Magia? No, matematica!
+                </div>
+                
+                <div id="passo7-1" class="passo">
+                    <h3><span class="passo-numero">🃏</span> Preparazione delle Carte</h3>
+                    <p><strong>L'insegnante prepara 10 carte</strong> (dall'Asso al 10) e le dispone COPERTE in questo ordine segreto:</p>
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                        <div style="font-size: 1.5em; color: #667eea; font-weight: bold;">
+                            2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - A
+                        </div>
+                        <p style="margin-top: 10px; color: #666;">
+                            (da sinistra verso destra, tutte coperte sul tavolo)
+                        </p>
+                    </div>
+                    <div class="nota">
+                        <strong>⚠️ Importante:</strong> Solo l'insegnante conosce questo ordine! 
+                        Per voi sono solo 10 carte coperte in fila!
+                    </div>
+                </div>
+                
+                <div id="passo7-2" class="passo">
+                    <h3><span class="passo-numero">1</span> L'insegnante si gira di spalle</h3>
+                    <p><strong>Uno studente viene chiamato alla cattedra</strong> mentre l'insegnante si gira completamente di spalle 
+                    (o esce dalla classe!).</p>
+                </div>
+                
+                <div id="passo7-3" class="passo">
+                    <h3><span class="passo-numero">2</span> Spostiamo le carte!</h3>
+                    <p>Lo studente alla cattedra deve:</p>
+                    <ol style="font-size: 1.15em;">
+                        <li><strong>Scegliere un numero da 1 a 9</strong> (quante carte vuole spostare)</li>
+                        <li><strong>Prendere quel numero di carte dall'INIZIO della fila</strong></li>
+                        <li><strong>Spostarle tutte insieme alla FINE della fila</strong>, mantenendo il loro ordine</li>
+                        <li><strong>Far slittare tutta la fila verso sinistra</strong>, così non si vede quante carte ha mosso</li>
+                    </ol>
+                    <div class="esempio">
+                        <strong>Esempio: se lo studente sceglie di spostare 3 carte</strong><br>
+                        • Situazione iniziale: 2-3-4-5-6-7-8-9-10-A<br>
+                        • Prende le prime 3: [2-3-4] | 5-6-7-8-9-10-A<br>
+                        • Le sposta alla fine: 5-6-7-8-9-10-A-2-3-4<br>
+                        • Fa slittare tutto verso sinistra
+                    </div>
+                </div>
+                
+                <div id="passo7-4" class="passo">
+                    <h3><span class="passo-numero">3</span> L'insegnante torna e indovina!</h3>
+                    <p>L'insegnante torna, guarda le carte coperte e dice:</p>
+                    <p style="font-size: 1.3em; text-align: center; margin: 20px 0;">
+                        <strong>"Adesso scoprirò UNA carta che mi dirà quante ne hai spostate!"</strong>
+                    </p>
+                </div>
+                
+                <div id="risultato7" class="risultato">
+                    <h4>✨ LA CARTA MAGICA! ✨</h4>
+                    <p style="font-size: 1.3em; margin: 20px 0;">
+                        <strong>L'insegnante scopre la SECONDA carta da DESTRA</strong>
+                    </p>
+                    <div style="background: white; color: #333; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                        <p style="font-size: 1.5em;">
+                            Se la carta è un <span class="evidenziato">3</span> → 
+                            lo studente ha spostato 3 carte! ✅
+                        </p>
+                        <p style="font-size: 1.5em; margin-top: 15px;">
+                            Se la carta è un <span class="evidenziato">7</span> → 
+                            ha spostato 7 carte! ✅
+                        </p>
+                    </div>
+                    <p style="margin-top: 20px; font-size: 1.2em;">
+                        🎉 <strong>La carta "parla" e rivela esattamente quante carte sono state spostate!</strong>
+                    </p>
+                    
+                    <div class="nota" style="margin-top: 30px;">
+                        <h4 style="color: #ff9800; margin-bottom: 15px;">🔄 Per Ripetere il Trucco:</h4>
+                        <p>Se volete ripetere con un altro studente, l'insegnante usa questa formula magica:</p>
+                        <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <strong>Prossima posizione = Posizione attuale + Valore della carta</strong><br>
+                            (se il risultato supera 10, togli 10)
+                        </div>
+                        <div class="esempio">
+                            <strong>Esempio:</strong><br>
+                            • Ho scoperto un 3 in posizione 2<br>
+                            • Prossima volta scoprirò la posizione: $2 + 3 = 5$ (quinta da destra)<br>
+                            • Se trovo un 6 in posizione 5<br>
+                            • Dopo scoprirò: $5 + 6 = 11 \rightarrow 1$ (prima da destra, perché tolgo 10)
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="spiegazione7" class="spiegazione">
+                    <h3>🔬 IL SEGRETO DELL'ANELLO MAGICO</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, questo trucco è geniale! Si basa su un'idea fantastica: 
+                        le carte si comportano come se fossero disposte in cerchio, non in linea!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">⭕ L'Idea dell'Anello</h4>
+                        <p>Immaginate che le 10 carte formino un anello circolare. 
+                        Quando spostate le prime carte alla fine, è come se le faceste ruotare intorno all'anello!</p>
+                        <div style="background: #f0f4ff; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center;">
+                            <p style="font-size: 1.2em; margin-bottom: 10px;">
+                                Disposizione originale in "cerchio":
+                            </p>
+                            <div style="font-size: 1.3em; color: #667eea;">
+                                A - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - (torna ad A)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔢 Cosa Succede Spostando le Carte</h4>
+                        <p>Quando lo studente sposta $n$ carte, ogni posizione viene occupata 
+                        da una carta il cui valore è aumentato di $n$ (in modo circolare).</p>
+                        
+                        <div class="esempio">
+                            <strong>Esempio con 3 carte spostate:</strong><br>
+                            • Prima: 2-3-4-5-6-7-8-9-10-A<br>
+                            • Dopo: 5-6-7-8-9-10-A-2-3-4<br><br>
+                            
+                            Guardate cosa succede in ogni posizione:<br>
+                            • Posizione 1: prima c'era 2, ora c'è 5 (= 2+3)<br>
+                            • Posizione 2: prima c'era 3, ora c'è 6 (= 3+3)<br>
+                            • Posizione 3: prima c'era 4, ora c'è 7 (= 4+3)<br>
+                            • ...<br>
+                            • Posizione 8: prima c'era 9, ora c'è 2 (= 9+3, ma togliamo 10)<br>
+                            • Posizione 9: prima c'era 10, ora c'è 3 (= 10+3, togliamo 10)
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🎯 Perché la Seconda Carta Funziona</h4>
+                        <p>Nella configurazione iniziale, la seconda posizione da destra contiene il 2.</p>
+                        <p>Dopo aver spostato $n$ carte, in quella posizione ci sarà: $2 + n$ (modulo 10).</p>
+                        <div class="formula">
+                            Carta in posizione 2 = $2 + n$ (se $< 10$) oppure $2 + n - 10$ (se $\geq 10$)
+                        </div>
+                        <div class="esempio">
+                            <strong>Verifica con diversi spostamenti:</strong><br>
+                            • Spostate 3 carte → in posizione 2 c'è: $2+3 = 5$... no aspetta!<br>
+                            • Devo pensare circolarmente: il 5 è 3 posizioni dopo il 2 ✅<br><br>
+                            
+                            In realtà, la posizione 2 da destra dopo aver spostato 3 carte contiene 
+                            proprio il numero 3, che indica quante carte sono state spostate!
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🧮 La Formula per Ripetere</h4>
+                        <p>Per le esibizioni successive, usiamo l'aritmetica modulare (modulo 10):</p>
+                        <ul style="font-size: 1.1em;">
+                            <li><strong>$v$ =</strong> valore della carta appena scoperta</li>
+                            <li><strong>$p_0$ =</strong> posizione di quella carta</li>
+                            <li><strong>$p_1$ =</strong> prossima posizione da scoprire</li>
+                        </ul>
+                        <div class="formula" style="margin-top: 15px;">
+                            $$p_1 = (p_0 + v) \mod 10$$
+                        </div>
+                        <p style="margin-top: 15px;">
+                            Questa formula ci permette di "inseguire" il 10 mentre ruota circolarmente!
+                        </p>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 In sintesi:</strong> Il trucco funziona perché le carte si comportano come 
+                        un orologio a 10 ore! Spostare le carte è come far girare le lancette. 
+                        La seconda posizione da destra è il nostro "punto di riferimento" che ci dice 
+                        di quanto le lancette sono girate!
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(7, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(7)" id="btnProssimo7" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(7)" id="btnRisultato7" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(7)" id="btnSegreto7" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(7)" id="btnReset7" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 8: Magia Ciclica -->
+        <div id="tab8" class="tab-content">
+            <div class="gioco-card">
+                <h2>🎯 Magia Ciclica - Il Numero 142857</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> preparatevi a conoscere uno dei numeri più magici della matematica: 
+                    il 142857! Questo numero ha proprietà straordinarie. Con un anello di carta, 
+                    un dado e un po' di magia matematica, vi stupirò!
+                </div>
+                
+                <div id="passo8-1" class="passo">
+                    <h3><span class="passo-numero">🔧</span> Preparazione dell'Anello Magico</h3>
+                    <p><strong>L'insegnante prepara un anello di carta</strong> con scritto il numero:</p>
+                    <div style="background: white; padding: 30px; border-radius: 15px; margin: 20px 0; text-align: center;">
+                        <div style="font-size: 3em; color: #667eea; font-weight: bold; letter-spacing: 10px;">
+                            142857
+                        </div>
+                    </div>
+                    <p>Il numero è scritto su una striscia, poi viene piegata e incollata formando un anello, 
+                    e messo in una busta sigillata.</p>
+                </div>
+                
+                <div id="passo8-2" class="passo">
+                    <h3><span class="passo-numero">1</span> Scegliete un numero dispari</h3>
+                    <p><strong>Ragazzi, pensate insieme a un numero dispari tra 1 e 10!</strong></p>
+                    <div class="esempio">
+                        <strong>Numeri dispari possibili:</strong><br>
+                        1, 3, 5, 7, 9
+                    </div>
+                    <div class="nota">
+                        <strong>💡 Curiosità:</strong> La maggior parte delle persone sceglie istintivamente il 7! 
+                        È il numero "più random" nella mente umana!
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em;">
+                        📝 <strong>Supponiamo che abbiate scelto: 7</strong>
+                    </p>
+                </div>
+                
+                <div id="passo8-3" class="passo">
+                    <h3><span class="passo-numero">2</span> Calcoliamo l'inverso</h3>
+                    <p><strong>L'insegnante calcola $1 \div 7$ e scrive le prime 6 cifre decimali</strong>:</p>
+                    <div class="esempio">
+                        <strong>Calcolo:</strong><br>
+                        $1 \div 7 = 0,142857142857142857...$
+                    </div>
+                    <p style="margin-top: 15px;">L'insegnante scrive su un foglio grande, ben visibile:</p>
+                    <div style="background: white; padding: 25px; border-radius: 15px; margin: 20px 0; text-align: center;">
+                        <div style="font-size: 2.5em; color: #667eea; font-weight: bold;">
+                            142857
+                        </div>
+                        <p style="margin-top: 10px; color: #666;">
+                            (le prime 6 cifre decimali di 1/7)
+                        </p>
+                    </div>
+                </div>
+                
+                <div id="passo8-4" class="passo">
+                    <h3><span class="passo-numero">3</span> Lanciate il dado!</h3>
+                    <p><strong>Uno studente lancia un dado normale</strong> (con facce da 1 a 6).</p>
+                    <div class="esempio">
+                        <strong>Supponiamo che esca:</strong> 4 🎲
+                    </div>
+                </div>
+                
+                <div id="passo8-5" class="passo">
+                    <h3><span class="passo-numero">4</span> Moltiplichiamo!</h3>
+                    <p><strong>Uno studente viene alla lavagna e moltiplica i due numeri</strong>:</p>
+                    <div class="esempio">
+                        <strong>Moltiplicazione:</strong><br>
+                        $142857 \times 4 = ?$
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.15em;">
+                        🧮 <strong>Fate il calcolo insieme!</strong>
+                    </p>
+                </div>
+                
+                <div id="risultato8" class="risultato">
+                    <h4>✨ L'ANELLO MAGICO PREDICE IL FUTURO! ✨</h4>
+                    <p style="font-size: 1.3em; margin: 20px 0;">
+                        Il risultato della moltiplicazione è:
+                    </p>
+                    <div style="background: white; color: #333; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                        <div style="font-size: 2.5em; color: #667eea; font-weight: bold;">
+                            $142857 \times 4 = 571428$
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.3em; margin: 20px 0;">
+                        <strong>Adesso l'insegnante:</strong>
+                    </p>
+                    <ol style="font-size: 1.15em; text-align: left; max-width: 600px; margin: 20px auto;">
+                        <li>Estrae l'anello dalla busta</li>
+                        <li>Lo strappa nel punto giusto (prima della cifra delle unità: 8)</li>
+                        <li>Mostra la striscia aperta...</li>
+                    </ol>
+                    
+                    <div style="background: #ffd700; color: #000; padding: 30px; border-radius: 15px; margin: 20px 0;">
+                        <p style="font-size: 2em; font-weight: bold;">
+                            571428
+                        </p>
+                        <p style="font-size: 1.3em; margin-top: 15px;">
+                            🎉 <strong>ESATTAMENTE il risultato della moltiplicazione!</strong>
+                        </p>
+                    </div>
+                    
+                    <p style="margin-top: 20px; font-size: 1.1em;">
+                        L'anello preparato PRIMA conteneva già il risultato, 
+                        anche se il numero del dado è stato scelto completamente a caso!
+                    </p>
+                </div>
+                
+                <div id="spiegazione8" class="spiegazione">
+                    <h3>🔬 IL NUMERO CICLICO PIÙ FAMOSO</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, il 142857 è chiamato "numero ciclico" ed è uno dei tesori della matematica! 
+                        Ha proprietà che sembrano magiche, ma sono pura matematica elegante!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔄 La Proprietà Ciclica</h4>
+                        <p><strong>Quando moltiplichiamo 142857 per un numero da 1 a 6, 
+                        otteniamo sempre le stesse cifre, ma in ordine ciclico!</strong></p>
+                        
+                        <table class="tabella" style="margin-top: 20px;">
+                            <tr>
+                                <th>Moltiplicazione</th>
+                                <th>Risultato</th>
+                                <th>Le stesse cifre?</th>
+                            </tr>
+                            <tr>
+                                <td>$142857 \times 1$</td>
+                                <td style="font-size: 1.2em; color: #667eea;"><strong>142857</strong></td>
+                                <td>✅ 1-4-2-8-5-7</td>
+                            </tr>
+                            <tr>
+                                <td>$142857 \times 2$</td>
+                                <td style="font-size: 1.2em; color: #667eea;"><strong>285714</strong></td>
+                                <td>✅ 2-8-5-7-1-4</td>
+                            </tr>
+                            <tr>
+                                <td>$142857 \times 3$</td>
+                                <td style="font-size: 1.2em; color: #667eea;"><strong>428571</strong></td>
+                                <td>✅ 4-2-8-5-7-1</td>
+                            </tr>
+                            <tr>
+                                <td>$142857 \times 4$</td>
+                                <td style="font-size: 1.2em; color: #667eea;"><strong>571428</strong></td>
+                                <td>✅ 5-7-1-4-2-8</td>
+                            </tr>
+                            <tr>
+                                <td>$142857 \times 5$</td>
+                                <td style="font-size: 1.2em; color: #667eea;"><strong>714285</strong></td>
+                                <td>✅ 7-1-4-2-8-5</td>
+                            </tr>
+                            <tr>
+                                <td>$142857 \times 6$</td>
+                                <td style="font-size: 1.2em; color: #667eea;"><strong>857142</strong></td>
+                                <td>✅ 8-5-7-1-4-2</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🎯 Perché Succede?</h4>
+                        <p>Il numero 142857 è il <strong>periodo della frazione $\frac{1}{7}$</strong>!</p>
+                        <div class="formula">
+                            $$\frac{1}{7} = 0,\overline{142857}142857142857...$$
+                        </div>
+                        <p style="margin-top: 15px;">Questa frazione periodica ha una struttura speciale che genera il comportamento ciclico!</p>
+                        
+                        <div class="esempio" style="margin-top: 20px;">
+                            <strong>Guardate questi pattern:</strong><br><br>
+                            $\frac{1}{7} = 0,\overline{142857}$<br>
+                            $\frac{2}{7} = 0,\overline{285714}$ (stesso periodo, spostato!)<br>
+                            $\frac{3}{7} = 0,\overline{428571}$ (sempre spostato!)<br>
+                            $\frac{4}{7} = 0,\overline{571428}$<br>
+                            $\frac{5}{7} = 0,\overline{714285}$<br>
+                            $\frac{6}{7} = 0,\overline{857142}$
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">✨ Perché Funziona l'Anello</h4>
+                        <p>L'anello contiene le cifre: <strong>1-4-2-8-5-7</strong> in sequenza circolare.</p>
+                        <p>Quando moltiplichiamo 142857 per $k$ (con $k$ da 1 a 6), 
+                        otteniamo lo stesso anello ma "ruotato"!</p>
+                        
+                        <div style="background: #f0f4ff; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                            <p><strong>Esempio con $k=4$:</strong></p>
+                            <p>Guardando il risultato 571428, vediamo che inizia con il 5.</p>
+                            <p>Se "tagliamo" l'anello appena prima del 5 e lo apriamo, 
+                            leggeremo esattamente: 5-7-1-4-2-8!</p>
+                        </div>
+                        
+                        <p style="margin-top: 15px;">
+                            <strong>Il trucco:</strong> L'insegnante guarda la cifra delle unità del risultato 
+                            e strappa l'anello in modo che quella cifra diventi l'ultima quando lo apre!
+                        </p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🎲 E se il Dado Non Fosse Stato 4?</h4>
+                        <p>Non importa! Qualunque numero da 1 a 6 esca, il trucco funziona:</p>
+                        <ul style="font-size: 1.1em; margin-top: 10px;">
+                            <li>Se esce 1 → strappa prima dell'1 → ottiene 142857</li>
+                            <li>Se esce 2 → strappa prima del 2 → ottiene 285714</li>
+                            <li>Se esce 3 → strappa prima del 4 → ottiene 428571</li>
+                            <li>Se esce 4 → strappa prima del 5 → ottiene 571428</li>
+                            <li>Se esce 5 → strappa prima del 7 → ottiene 714285</li>
+                            <li>Se esce 6 → strappa prima dell'8 → ottiene 857142</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 Curiosità Extra:</strong> Il 142857 ha altre proprietà magiche!<br>
+                        • Somma delle cifre: $1+4+2+8+5+7 = 27$ (multiplo di 9!)<br>
+                        • Diviso in due parti: $142 + 857 = 999$<br>
+                        • Moltiplicato per 7: $142857 \times 7 = 999999$ (sei nove!)<br>
+                        • È il più piccolo numero ciclico con 6 cifre!
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(8, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(8)" id="btnProssimo8" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(8)" id="btnRisultato8" style="display:none;">🎩 Rivela il Risultato!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(8)" id="btnSegreto8" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(8)" id="btnReset8" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 9: Locanda dei 4 Cantoni -->
+        <div id="tab9" class="tab-content">
+            <div class="gioco-card">
+                <h2>🏰 La Locanda dei Quattro Cantoni</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> ora vi racconterò una storia con le carte che finisce in modo sorprendente! 
+                    Prepareremo 16 carte (4 Assi, 4 Fanti, 4 Re, 4 Regine), le mescoleremo seguendo la storia, 
+                    e alla fine... la matematica metterà ordine nel caos!
+                </div>
+                
+                <div id="passo9-1" class="passo">
+                    <h3><span class="passo-numero">🃏</span> Preparazione delle Carte</h3>
+                    <p><strong>Servono 16 carte dal mazzo:</strong></p>
+                    <ul style="font-size: 1.15em;">
+                        <li>4 Assi (A♠, A♥, A♦, A♣)</li>
+                        <li>4 Fanti (J♠, J♥, J♦, J♣)</li>
+                        <li>4 Re (K♠, K♥, K♦, K♣)</li>
+                        <li>4 Regine (Q♠, Q♥, Q♦, Q♣)</li>
+                    </ul>
+                </div>
+                
+                <div id="passo9-2" class="passo">
+                    <h3><span class="passo-numero">📖</span> La Storia - Parte 1: I Mercanti</h3>
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <p style="font-size: 1.15em; line-height: 1.8;">
+                            <em>"Era una notte buia e tempestosa. La neve cadeva fitta e il vento ululava. 
+                            Quattro mercanti stanchi e infreddoliti arrivarono alla <strong>Locanda dei Quattro Cantoni</strong>, 
+                            una piccola locanda con solo quattro stanze. 
+                            Il padrone li accolse calorosamente e diede a ciascuno una stanza."</em>
+                        </p>
+                    </div>
+                    <p><strong>👉 L'insegnante dispone i 4 ASSI scoperti in fila sul tavolo:</strong></p>
+                    <div style="text-align: center; font-size: 2em; margin: 20px 0;">
+                        A♠ &nbsp;&nbsp; A♥ &nbsp;&nbsp; A♦ &nbsp;&nbsp; A♣
+                    </div>
+                    <p style="text-align: center; color: #666;">
+                        (Ogni Asso rappresenta un mercante in una stanza)
+                    </p>
+                </div>
+                
+                <div id="passo9-3" class="passo">
+                    <h3><span class="passo-numero">📖</span> La Storia - Parte 2: I Soldati</h3>
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <p style="font-size: 1.15em; line-height: 1.8;">
+                            <em>"Mezz'ora dopo, quattro soldati bussarono alla porta della locanda. 
+                            Anche loro erano infreddoliti e affamati. Il padrone, non avendo altre stanze libere, 
+                            mise ogni soldato a dormire insieme a un mercante."</em>
+                        </p>
+                    </div>
+                    <p><strong>👉 L'insegnante mette i 4 FANTI, scoperti, uno sopra ogni Asso:</strong></p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">J♠</div>
+                            <div style="font-size: 1.5em; opacity: 0.5;">A♠</div>
+                        </div>
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">J♥</div>
+                            <div style="font-size: 1.5em; opacity: 0.5;">A♥</div>
+                        </div>
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">J♦</div>
+                            <div style="font-size: 1.5em; opacity: 0.5;">A♦</div>
+                        </div>
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">J♣</div>
+                            <div style="font-size: 1.5em; opacity: 0.5;">A♣</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="passo9-4" class="passo">
+                    <h3><span class="passo-numero">📖</span> La Storia - Parte 3: I Re</h3>
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <p style="font-size: 1.15em; line-height: 1.8;">
+                            <em>"Dopo un'altra mezz'ora, quattro nobili re giunsero alla locanda, 
+                            scappando dalla tempesta. Il padrone, sempre più in difficoltà, 
+                            li sistemò nelle stanze, aggiungendoli ai mercanti e ai soldati."</em>
+                        </p>
+                    </div>
+                    <p><strong>👉 L'insegnante aggiunge i 4 RE sopra le coppie precedenti:</strong></p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">K♠</div>
+                            <div style="font-size: 1.2em; opacity: 0.7;">J♠</div>
+                            <div style="font-size: 1em; opacity: 0.5;">A♠</div>
+                        </div>
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">K♥</div>
+                            <div style="font-size: 1.2em; opacity: 0.7;">J♥</div>
+                            <div style="font-size: 1em; opacity: 0.5;">A♥</div>
+                        </div>
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">K♦</div>
+                            <div style="font-size: 1.2em; opacity: 0.7;">J♦</div>
+                            <div style="font-size: 1em; opacity: 0.5;">A♦</div>
+                        </div>
+                        <div style="display: inline-block; margin: 0 15px;">
+                            <div style="font-size: 1.5em;">K♣</div>
+                            <div style="font-size: 1.2em; opacity: 0.7;">J♣</div>
+                            <div style="font-size: 1em; opacity: 0.5;">A♣</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="passo9-5" class="passo">
+                    <h3><span class="passo-numero">📖</span> La Storia - Parte 4: Le Regine</h3>
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <p style="font-size: 1.15em; line-height: 1.8;">
+                            <em>"Infine, dopo un'altra mezz'ora, quattro eleganti regine arrivarono alla locanda. 
+                            Il povero padrone, ormai disperato, le mise nelle stanze già affollate. 
+                            Ma le regine protestarono: 'Non possiamo dormire con tutti questi uomini!' 
+                            Il padrone si mise a pensare..."</em>
+                        </p>
+                    </div>
+                    <p><strong>👉 L'insegnante aggiunge le 4 REGINE completando i mazzetti:</strong></p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <p>Ora ci sono 4 mazzetti, ognuno con: Q - K - J - A</p>
+                    </div>
+                </div>
+                
+                <div id="passo9-6" class="passo">
+                    <h3><span class="passo-numero">🔄</span> Il Padrone Riflette</h3>
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <p style="font-size: 1.15em; line-height: 1.8;">
+                            <em>"Il padrone della locanda si concentrò profondamente, 
+                            pensando a come sistemare la situazione..."</em>
+                        </p>
+                    </div>
+                    <p><strong>👉 L'insegnante:</strong></p>
+                    <ol style="font-size: 1.15em;">
+                        <li>Gira tutti e 4 i mazzetti (ora sono coperti)</li>
+                        <li>Li sovrappone uno sull'altro formando un mazzo unico di 16 carte</li>
+                        <li>Fa tagliare il mazzo più volte (ma NON mescolare!)</li>
+                    </ol>
+                </div>
+                
+                <div id="passo9-7" class="passo">
+                    <h3><span class="passo-numero">🎴</span> La Distribuzione Finale</h3>
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <p style="font-size: 1.15em; line-height: 1.8;">
+                            <em>"Dopo aver pensato, il padrone ebbe un'idea geniale: 
+                            'Riorganizzerò gli ospiti!' disse."</em>
+                        </p>
+                    </div>
+                    <p><strong>👉 L'insegnante distribuisce le carte coperte in 4 gruppi:</strong></p>
+                    <p>Prende una carta alla volta dalla cima e le distribuisce da sinistra a destra, 
+                    formando 4 nuovi mazzetti di 4 carte ciascuno.</p>
+                </div>
+                
+                <div id="risultato9" class="risultato">
+                    <h4>✨ IL MIRACOLO DELLA LOCANDA! ✨</h4>
+                    
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <p style="font-size: 1.2em; line-height: 1.8; color: #333;">
+                            <em>"E così," concluse il padrone, "ho trovato la soluzione perfetta! 
+                            Ho messo tutti i <strong>mercanti in una stanza</strong>, 
+                            tutti i <strong>soldati in un'altra</strong>, 
+                            tutti i <strong>re in una terza</strong>, 
+                            e tutte le <strong>regine nell'ultima</strong>!"</em>
+                        </p>
+                    </div>
+                    
+                    <p style="font-size: 1.4em; margin: 20px 0;">
+                        <strong>👉 L'insegnante gira i 4 mazzetti uno alla volta...</strong>
+                    </p>
+                    
+                    <div style="background: white; color: #333; padding: 30px; border-radius: 15px; margin: 20px 0;">
+                        <div style="font-size: 1.3em; margin: 15px 0;">
+                            🏠 <strong>Stanza 1:</strong> <span style="color: #d32f2f;">A♥ A♦ A♠ A♣</span> (tutti mercanti!)
+                        </div>
+                        <div style="font-size: 1.3em; margin: 15px 0;">
+                            🏠 <strong>Stanza 2:</strong> <span style="color: #1976d2;">J♥ J♦ J♠ J♣</span> (tutti soldati!)
+                        </div>
+                        <div style="font-size: 1.3em; margin: 15px 0;">
+                            🏠 <strong>Stanza 3:</strong> <span style="color: #f57c00;">K♥ K♦ K♠ K♣</span> (tutti re!)
+                        </div>
+                        <div style="font-size: 1.3em; margin: 15px 0;">
+                            🏠 <strong>Stanza 4:</strong> <span style="color: #7b1fa2;">Q♥ Q♦ Q♠ Q♣</span> (tutte regine!)
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.3em; margin-top: 20px;">
+                        🎉 <strong>E tutti vissero felici e contenti!</strong>
+                    </p>
+                </div>
+                
+                <div id="spiegazione9" class="spiegazione">
+                    <h3>🔬 LA MATEMATICA DIETRO LA STORIA</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, questa non è solo una bella storia! È un trucco matematico basato 
+                        sull'aritmetica modulare. Vediamo perché funziona SEMPRE!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">📊 La Struttura Iniziale</h4>
+                        <p>Dopo aver formato i mazzetti della storia, abbiamo:</p>
+                        <table class="tabella">
+                            <tr>
+                                <th>Posizione nel mazzo</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9-16</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Carta</strong></td>
+                                <td>Q</td>
+                                <td>K</td>
+                                <td>J</td>
+                                <td>A</td>
+                                <td>Q</td>
+                                <td>K</td>
+                                <td>J</td>
+                                <td>A</td>
+                                <td>...</td>
+                            </tr>
+                        </table>
+                        <p style="margin-top: 15px;">
+                            <strong>Osservazione chiave:</strong> Carte dello stesso valore sono sempre 
+                            a distanza di 4 posizioni!
+                        </p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔄 L'Effetto del Taglio</h4>
+                        <p>Quando tagliamo il mazzo (spostando carte dalla cima al fondo), 
+                        le posizioni "ruotano" in modo circolare, ma la distanza tra carte 
+                        dello stesso valore rimane sempre 4!</p>
+                        
+                        <div class="esempio">
+                            <strong>Esempio dopo un taglio:</strong><br>
+                            Posizioni: ... K-J-A-Q-K-J-A-Q-K-J-A-Q-K-J-A ...<br>
+                            Gli Assi sono sempre a distanza 4: posizioni 3, 7, 11, 15
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🎯 La Distribuzione Magica</h4>
+                        <p>Quando distribuiamo le carte in 4 gruppi, assegniamo:</p>
+                        <ul style="font-size: 1.1em;">
+                            <li>Posizione 1, 5, 9, 13 → <strong>Gruppo 1</strong></li>
+                            <li>Posizione 2, 6, 10, 14 → <strong>Gruppo 2</strong></li>
+                            <li>Posizione 3, 7, 11, 15 → <strong>Gruppo 3</strong></li>
+                            <li>Posizione 4, 8, 12, 16 → <strong>Gruppo 4</strong></li>
+                        </ul>
+                        
+                        <div style="background: #f0f4ff; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <p><strong>La magia:</strong> Ogni gruppo contiene posizioni a distanza di 4!</p>
+                            <p>E le carte dello stesso valore sono esattamente a distanza di 4!</p>
+                            <p style="margin-top: 10px; font-size: 1.2em; color: #667eea;">
+                                <strong>Quindi ogni gruppo conterrà tutte e 4 le carte dello stesso valore!</strong>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🧮 Aritmetica Modulare</h4>
+                        <p>Dal punto di vista matematico, stiamo lavorando in modulo 4:</p>
+                        <div class="formula">
+                            Se $n \equiv k \pmod{4}$, allora la carta in posizione $n$ va nel gruppo $k$
+                        </div>
+                        <p style="margin-top: 15px;">
+                            Poiché le carte dello stesso valore occupano posizioni che sono tutte 
+                            congruenti modulo 4, finiscono tutte nello stesso gruppo!
+                        </p>
+                        
+                        <div class="esempio">
+                            <strong>Esempio concreto:</strong><br>
+                            Se gli Assi sono in posizioni 4, 8, 12, 16:<br>
+                            • $4 \equiv 0 \pmod{4}$ → Gruppo 4<br>
+                            • $8 \equiv 0 \pmod{4}$ → Gruppo 4<br>
+                            • $12 \equiv 0 \pmod{4}$ → Gruppo 4<br>
+                            • $16 \equiv 0 \pmod{4}$ → Gruppo 4<br>
+                            Tutti gli Assi nello stesso gruppo!
+                        </div>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 In sintesi:</strong> Il trucco funziona perché:<br>
+                        1. Inizialmente raggruppiamo le carte mettendo i valori uguali a distanza di 4<br>
+                        2. Il taglio preserva questa struttura (ruota il cerchio, ma non cambia le distanze)<br>
+                        3. La distribuzione "separa" le posizioni in base al resto della divisione per 4<br>
+                        4. Quindi separa perfettamente anche i valori delle carte!<br><br>
+                        <strong>È come ordinare le carte usando solo la matematica! 🎴✨</strong>
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(9, 1)">▶️ Inizia la Storia</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(9)" id="btnProssimo9" style="display:none;">Continua la Storia →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(9)" id="btnRisultato9" style="display:none;">🎩 Il Lieto Fine!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(9)" id="btnSegreto9" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(9)" id="btnReset9" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 10: Le Coppie Reali -->
+        <div id="tab10" class="tab-content">
+            <div class="gioco-card">
+                <h2>👑 Le Coppie Reali</h2>
+                
+                <div class="introduzione">
+                    <strong>Ragazzi,</strong> questo è un trucco romantico con le carte! 
+                    Prenderemo 4 re e 4 regine, li mescoleremo, e poi - senza guardare - 
+                    formeremo 4 coppie. E indovinate? Ogni coppia avrà lo stesso seme! 
+                    I cuori con i cuori, le picche con le picche... La matematica è romantica!
+                </div>
+                
+                <div id="passo10-1" class="passo">
+                    <h3><span class="passo-numero">🃏</span> Preparazione delle Carte</h3>
+                    <p><strong>Servono 8 carte:</strong></p>
+                    <ul style="font-size: 1.15em;">
+                        <li>4 Re: K♥, K♦, K♠, K♣</li>
+                        <li>4 Regine: Q♥, Q♦, Q♠, Q♣</li>
+                    </ul>
+                    <div class="nota">
+                        <strong>🎯 L'Ordine Segreto:</strong> L'insegnante deve preparare le carte 
+                        in modo che i semi delle prime 4 carte corrispondano ai semi delle seconde 4, 
+                        senza badare se siano re o regine.
+                    </div>
+                </div>
+                
+                <div id="passo10-2" class="passo">
+                    <h3><span class="passo-numero">1</span> Mostriamo le Carte</h3>
+                    <p><strong>L'insegnante mostra le 8 carte disposte in fila</strong> (apparentemente casuale):</p>
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                        <div style="font-size: 2em; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                            <span>K♥</span>
+                            <span>Q♠</span>
+                            <span>K♦</span>
+                            <span>Q♣</span>
+                            <span>Q♥</span>
+                            <span>K♠</span>
+                            <span>Q♦</span>
+                            <span>K♣</span>
+                        </div>
+                    </div>
+                    <div class="esempio">
+                        <strong>📝 Osservate l'ordine dei semi:</strong><br>
+                        Prime 4 carte: ♥ ♠ ♦ ♣<br>
+                        Seconde 4 carte: ♥ ♠ ♦ ♣<br>
+                        <strong style="color: #d32f2f;">I semi corrispondono!</strong> (ma gli studenti non lo sanno)
+                    </div>
+                </div>
+                
+                <div id="passo10-3" class="passo">
+                    <h3><span class="passo-numero">2</span> Mescoliamo le Carte</h3>
+                    <p><strong>Uno studente mescola il mazzetto tagliandolo più volte</strong> 
+                    (ma senza mescolare completamente, solo tagliando!).</p>
+                    <div class="nota">
+                        <strong>⚠️ Importante:</strong> Solo tagli, NON mescolare! 
+                        Tagliare significa spostare carte dalla cima al fondo, mantenendo l'ordine.
+                    </div>
+                </div>
+                
+                <div id="passo10-4" class="passo">
+                    <h3><span class="passo-numero">3</span> L'Insegnante si Gira</h3>
+                    <p><strong>L'insegnante porta le carte dietro la schiena</strong> 
+                    (o si gira completamente di spalle).</p>
+                    <p style="font-size: 1.2em; margin: 15px 0;">
+                        🎩 <strong>"Adesso, senza guardare, formerò 4 coppie reali perfette!"</strong>
+                    </p>
+                </div>
+                
+                <div id="passo10-5" class="passo">
+                    <h3><span class="passo-numero">4</span> La Formazione delle Coppie</h3>
+                    <p><strong>Dietro la schiena, l'insegnante:</strong></p>
+                    <ol style="font-size: 1.15em;">
+                        <li>Divide le 8 carte in due mazzetti da 4 (prende le prime 4, poi le seconde 4)</li>
+                        <li>Forma le coppie prendendo alternativamente una carta dal primo e una dal secondo mazzetto</li>
+                        <li>Dispone le 4 coppie coperte sul tavolo</li>
+                    </ol>
+                </div>
+                
+                <div id="risultato10" class="risultato">
+                    <h4>✨ LE COPPIE PERFETTE! ✨</h4>
+                    
+                    <p style="font-size: 1.3em; margin: 20px 0;">
+                        <strong>L'insegnante gira le coppie una alla volta...</strong>
+                    </p>
+                    
+                    <div style="background: white; color: #333; padding: 30px; border-radius: 15px; margin: 20px 0;">
+                        <div style="margin: 20px 0; font-size: 1.3em;">
+                            💕 <strong>Coppia 1:</strong> <span style="color: #d32f2f;">K♥ + Q♥</span> (entrambi cuori!)
+                        </div>
+                        <div style="margin: 20px 0; font-size: 1.3em;">
+                            💕 <strong>Coppia 2:</strong> <span style="color: #000;">K♠ + Q♠</span> (entrambi picche!)
+                        </div>
+                        <div style="margin: 20px 0; font-size: 1.3em;">
+                            💕 <strong>Coppia 3:</strong> <span style="color: #d32f2f;">K♦ + Q♦</span> (entrambi quadri!)
+                        </div>
+                        <div style="margin: 20px 0; font-size: 1.3em;">
+                            💕 <strong>Coppia 4:</strong> <span style="color: #000;">K♣ + Q♣</span> (entrambi fiori!)
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.3em; margin-top: 20px;">
+                        🎉 <strong>Ogni re ha trovato la sua regina dello stesso seme, 
+                        anche se le carte erano state mescolate e l'insegnante non guardava!</strong>
+                    </p>
+                </div>
+                
+                <div id="spiegazione10" class="spiegazione">
+                    <h3>🔬 LA MATEMATICA DELL'AMORE</h3>
+                    
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Ragazzi, questo trucco è una variante più semplice della "Locanda dei 4 Cantoni"! 
+                        Il principio è lo stesso, ma con meno carte. Vediamo perché funziona!
+                    </p>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🎴 La Preparazione Segreta</h4>
+                        <p>Il segreto è nell'ordine iniziale delle carte:</p>
+                        <table class="tabella">
+                            <tr>
+                                <th>Posizione</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Carta</strong></td>
+                                <td>K♥</td>
+                                <td>Q♠</td>
+                                <td>K♦</td>
+                                <td>Q♣</td>
+                                <td>Q♥</td>
+                                <td>K♠</td>
+                                <td>Q♦</td>
+                                <td>K♣</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Seme</strong></td>
+                                <td style="color: #d32f2f;">♥</td>
+                                <td>♠</td>
+                                <td style="color: #d32f2f;">♦</td>
+                                <td>♣</td>
+                                <td style="color: #d32f2f;">♥</td>
+                                <td>♠</td>
+                                <td style="color: #d32f2f;">♦</td>
+                                <td>♣</td>
+                            </tr>
+                        </table>
+                        <p style="margin-top: 15px;">
+                            <strong>Osservazione chiave:</strong> I semi in posizione 1 e 5 sono uguali (♥), 
+                            quelli in 2 e 6 sono uguali (♠), in 3 e 7 uguali (♦), in 4 e 8 uguali (♣).
+                        </p>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🔄 L'Effetto del Taglio</h4>
+                        <p>Quando tagliamo il mazzo, le posizioni ruotano circolarmente:</p>
+                        <div class="esempio">
+                            <strong>Esempio: taglio di 3 carte</strong><br>
+                            Prima: K♥-Q♠-K♦-Q♣-Q♥-K♠-Q♦-K♣<br>
+                            Dopo: Q♣-Q♥-K♠-Q♦-K♣-K♥-Q♠-K♦<br><br>
+                            Ma guardate i semi:<br>
+                            Prima: ♥-♠-♦-♣ | ♥-♠-♦-♣<br>
+                            Dopo: ♣-♥-♠-♦ | ♣-♥-♠-♦<br>
+                            <strong style="color: #d32f2f;">
+                                La corrispondenza tra posizioni distanti 4 rimane!
+                            </strong>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">✂️ La Divisione Magica</h4>
+                        <p>Quando dividiamo in due gruppi da 4:</p>
+                        <ul style="font-size: 1.1em;">
+                            <li><strong>Gruppo 1:</strong> posizioni 1, 2, 3, 4</li>
+                            <li><strong>Gruppo 2:</strong> posizioni 5, 6, 7, 8</li>
+                        </ul>
+                        <p style="margin-top: 15px;">
+                            Formando le coppie (carta dal gruppo 1 + carta dal gruppo 2):
+                        </p>
+                        <ul style="font-size: 1.1em;">
+                            <li>Coppia 1: posizione 1 + posizione 5 (stessa distanza: 4)</li>
+                            <li>Coppia 2: posizione 2 + posizione 6 (stessa distanza: 4)</li>
+                            <li>Coppia 3: posizione 3 + posizione 7 (stessa distanza: 4)</li>
+                            <li>Coppia 4: posizione 4 + posizione 8 (stessa distanza: 4)</li>
+                        </ul>
+                        <div style="background: #f0f4ff; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <p style="font-size: 1.2em; color: #667eea;">
+                                <strong>Poiché carte a distanza 4 hanno lo stesso seme, 
+                                ogni coppia avrà carte dello stesso seme!</strong>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #9c27b0; margin-bottom: 15px;">🧮 Rappresentazione Matematica</h4>
+                        <p>Chiamiamo $w, x, y, z$ i quattro semi. Dopo i tagli, la situazione è:</p>
+                        <table class="tabella">
+                            <tr>
+                                <th>Posizione</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Seme</strong></td>
+                                <td>$w$</td>
+                                <td>$x$</td>
+                                <td>$y$</td>
+                                <td>$z$</td>
+                                <td>$w$</td>
+                                <td>$x$</td>
+                                <td>$y$</td>
+                                <td>$z$</td>
+                            </tr>
+                        </table>
+                        <p style="margin-top: 15px;">Le coppie risultanti saranno:</p>
+                        <div class="formula">
+                            $(w,w), (x,x), (y,y), (z,z)$
+                        </div>
+                        <p>Tutte con semi corrispondenti!</p>
+                    </div>
+                    
+                    <div class="nota">
+                        <strong>💡 In sintesi:</strong> Il trucco si basa su due principi:<br>
+                        1. <strong>Preparazione:</strong> Semi in posizioni distanti 4 sono uguali<br>
+                        2. <strong>Conservazione:</strong> Il taglio mantiene questa proprietà (rotazione circolare)<br>
+                        3. <strong>Accoppiamento:</strong> Dividendo a metà e accoppiando, uniamo sempre posizioni distanti 4<br><br>
+                        <strong>Risultato:</strong> Ogni coppia ha lo stesso seme, indipendentemente dai tagli!<br><br>
+                        <strong>È l'aritmetica modulare in azione: lavoriamo modulo 4! 👑💕</strong>
+                    </div>
+                </div>
+                
+                <div class="controlli">
+                    <button class="btn btn-prossimo" onclick="mostraPasso(10, 1)">▶️ Inizia il Gioco</button>
+                    <button class="btn btn-prossimo" onclick="prossimoPassoGioco(10)" id="btnProssimo10" style="display:none;">Prossimo Passo →</button>
+                    <button class="btn btn-rivela" onclick="mostraRisultato(10)" id="btnRisultato10" style="display:none;">🎩 Rivela le Coppie!</button>
+                    <button class="btn btn-segreto" onclick="mostraSpiegazione(10)" id="btnSegreto10" style="display:none;">🔍 Svela il Segreto!</button>
+                    <button class="btn btn-reset" onclick="resetGioco(10)" id="btnReset10" style="display:none;">🔄 Ricomincia</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        // Configurazione per ogni gioco: numero di passi
+        const configGiochi = {
+            1: 3,  // Il Magico 37
+            2: 3,  // Il Numero 3087
+            3: 5,  // Il Numero 1089
+            4: 5,  // Il Numero Ripetuto
+            5: 5,  // Il Magico 9
+            6: 4,  // Calcolo Pedestre
+            7: 5,  // La Carta Parlante
+            8: 5,  // Magia Ciclica
+            9: 7,  // Locanda dei 4 Cantoni
+            10: 5  // Le Coppie Reali
+        };
+        
+        // Stato corrente di ogni gioco
+        let statoGiochi = {};
+        
+        // Inizializza lo stato dei giochi
+        for (let i = 1; i <= 10; i++) {
+            statoGiochi[i] = {
+                passoCorrente: 0,
+                totalePassi: configGiochi[i]
+            };
+        }
+        
+        // Funzione per mostrare una scheda
+        function mostraTab(tabId) {
+            // Nascondi tutte le schede
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Nascondi tutti i bottoni attivi
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Mostra la scheda selezionata
+            document.getElementById(tabId).classList.add('active');
+            
+            // Attiva il bottone corrispondente
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Funzione per mostrare un passo specifico
+        function mostraPasso(numeroGioco, numeroPasso) {
+            const passo = document.getElementById(`passo${numeroGioco}-${numeroPasso}`);
+            if (passo) {
+                passo.classList.add('visibile');
+                statoGiochi[numeroGioco].passoCorrente = numeroPasso;
+                
+                // Aggiorna i bottoni
+                document.getElementById(`btnProssimo${numeroGioco}`).style.display = 'inline-block';
+                
+                // Nascondi il bottone "Inizia"
+                event.target.style.display = 'none';
+            }
+        }
+        
+        // Funzione per mostrare il prossimo passo
+        function prossimoPassoGioco(numeroGioco) {
+            const stato = statoGiochi[numeroGioco];
+            
+            if (stato.passoCorrente < stato.totalePassi) {
+                stato.passoCorrente++;
+                const passo = document.getElementById(`passo${numeroGioco}-${stato.passoCorrente}`);
+                if (passo) {
+                    passo.classList.add('visibile');
+                    // Scroll al passo
+                    passo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                
+                // Se è l'ultimo passo, mostra il bottone risultato
+                if (stato.passoCorrente >= stato.totalePassi) {
+                    document.getElementById(`btnProssimo${numeroGioco}`).style.display = 'none';
+                    document.getElementById(`btnRisultato${numeroGioco}`).style.display = 'inline-block';
+                }
+            }
+        }
+        
+        // Funzione per mostrare il risultato
+        function mostraRisultato(numeroGioco) {
+            const risultato = document.getElementById(`risultato${numeroGioco}`);
+            if (risultato) {
+                risultato.classList.add('visibile');
+                risultato.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Aggiorna bottoni
+                document.getElementById(`btnRisultato${numeroGioco}`).style.display = 'none';
+                document.getElementById(`btnSegreto${numeroGioco}`).style.display = 'inline-block';
+                document.getElementById(`btnReset${numeroGioco}`).style.display = 'inline-block';
+            }
+        }
+        
+        // Funzione per mostrare la spiegazione
+        function mostraSpiegazione(numeroGioco) {
+            const spiegazione = document.getElementById(`spiegazione${numeroGioco}`);
+            if (spiegazione) {
+                spiegazione.classList.add('visibile');
+                spiegazione.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Nascondi il bottone segreto
+                document.getElementById(`btnSegreto${numeroGioco}`).style.display = 'none';
+            }
+        }
+        
+        // Funzione per resettare il gioco
+        function resetGioco(numeroGioco) {
+            // Nascondi tutti i passi
+            for (let i = 1; i <= statoGiochi[numeroGioco].totalePassi; i++) {
+                const passo = document.getElementById(`passo${numeroGioco}-${i}`);
+                if (passo) {
+                    passo.classList.remove('visibile');
+                }
+            }
+            
+            // Nascondi risultato e spiegazione
+            const risultato = document.getElementById(`risultato${numeroGioco}`);
+            if (risultato) {
+                risultato.classList.remove('visibile');
+            }
+            
+            const spiegazione = document.getElementById(`spiegazione${numeroGioco}`);
+            if (spiegazione) {
+                spiegazione.classList.remove('visibile');
+            }
+            
+            // Reset stato
+            statoGiochi[numeroGioco].passoCorrente = 0;
+            
+            // Reset bottoni
+            const btnContainer = document.querySelector(`#tab${numeroGioco} .controlli`);
+            btnContainer.querySelector('.btn-prossimo:first-of-type').style.display = 'inline-block';
+            document.getElementById(`btnProssimo${numeroGioco}`).style.display = 'none';
+            document.getElementById(`btnRisultato${numeroGioco}`).style.display = 'none';
+            document.getElementById(`btnSegreto${numeroGioco}`).style.display = 'none';
+            document.getElementById(`btnReset${numeroGioco}`).style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

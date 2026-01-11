@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magie Matematiche - Attività Interattive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            padding: 15px 30px;
+            background: white;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .tab-button.active {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #ffd700;
+            padding-bottom: 10px;
+        }
+        
+        .instructions {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .instructions li {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .interactive-area {
+            background: #fff9e6;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed #ffd700;
+        }
+        
+        input[type="number"] {
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            width: 200px;
+            margin: 10px 5px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        .result {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+            animation: pulse 0.5s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .explanation {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        
+        .explanation h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .magic-icon {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        
+        .calendar-cell {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        .calendar-cell:hover {
+            background: #e0e7ff;
+        }
+        
+        .calendar-cell.selected {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .calendar-header {
+            font-weight: bold;
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎩 Magie Matematiche 🎩</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">📱 Il Numero Pensato</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">📅 Il Calendario Magico</button>
+            <button class="tab-button" onclick="openTab(event, 'tab3')">🔢 Il Mistero del 1089</button>
+            <button class="tab-button" onclick="openTab(event, 'tab4')">✖️ Moltiplicare per 11</button>
+        </div>
+        
+        <!-- TAB 1: Il Numero Pensato -->
+        <div id="tab1" class="tab-content active">
+            <h2>📱 Il Trucco del Numero Pensato</h2>
+            <div class="magic-icon">✨🎯✨</div>
+            
+            <div class="instructions">
+                <h3>Prova questa magia matematica:</h3>
+                <ol>
+                    <li>Pensa a un numero qualsiasi</li>
+                    <li>Aggiungi 5</li>
+                    <li>Moltiplica il risultato per 2</li>
+                    <li>Sottrai 4</li>
+                    <li>Dividi per 2</li>
+                    <li>Sottrai il numero di partenza</li>
+                    <li><strong>Il risultato sarà sempre 3!</strong></li>
+                </ol>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Verifica con un numero:</h3>
+                <input type="number" id="number1" placeholder="Inserisci un numero">
+                <button onclick="calculateTrick1()">🎩 Fai la Magia!</button>
+                <div id="result1" class="result"></div>
+            </div>
+            
+            <div class="explanation">
+                <h3>🔍 Spiegazione Matematica:</h3>
+                <p>Chiamiamo il numero pensato $x$. Seguendo i passaggi:</p>
+                <ul>
+                    <li>Partiamo da: $x$</li>
+                    <li>Aggiungi 5: $x + 5$</li>
+                    <li>Moltiplica per 2: $2(x + 5) = 2x + 10$</li>
+                    <li>Sottrai 4: $2x + 10 - 4 = 2x + 6$</li>
+                    <li>Dividi per 2: $\frac{2x + 6}{2} = x + 3$</li>
+                    <li>Sottrai $x$: $x + 3 - x = 3$</li>
+                </ul>
+                <p><strong>Il numero iniziale si elimina sempre, lasciando solo 3!</strong></p>
+            </div>
+        </div>
+        
+        <!-- TAB 2: Il Calendario Magico -->
+        <div id="tab2" class="tab-content">
+            <h2>📅 Il Calendario Magico</h2>
+            <div class="magic-icon">🗓️✨🗓️</div>
+            
+            <div class="instructions">
+                <h3>Scopri la magia del calendario:</h3>
+                <ol>
+                    <li>Osserva il calendario qui sotto</li>
+                    <li>Scegli un quadrato 3×3 (clicca sulla cella in alto a sinistra del quadrato)</li>
+                    <li>La somma di tutti i 9 numeri sarà sempre 9 volte il numero centrale!</li>
+                </ol>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Calendario di Gennaio:</h3>
+                <div class="calendar-grid" id="calendar"></div>
+                <button onclick="verifyCalendar()">✨ Verifica la Magia!</button>
+                <div id="result2" class="result"></div>
+            </div>
+            
+            <div class="explanation">
+                <h3>🔍 Spiegazione Matematica:</h3>
+                <p>Se il numero centrale è $n$, i numeri nel quadrato 3×3 sono:</p>
+                <p style="text-align: center;">
+                    $(n-8)$ $(n-7)$ $(n-6)$<br>
+                    $(n-1)$ $n$ $(n+1)$<br>
+                    $(n+6)$ $(n+7)$ $(n+8)$
+                </p>
+                <p>Sommando tutti i numeri:</p>
+                <p>$$(n-8) + (n-7) + (n-6) + (n-1) + n + (n+1) + (n+6) + (n+7) + (n+8) = 9n$$</p>
+                <p><strong>Le somme positive e negative si annullano, lasciando $9n$!</strong></p>
+            </div>
+        </div>
+        
+        <!-- TAB 3: Il Mistero del 1089 -->
+        <div id="tab3" class="tab-content">
+            <h2>🔢 Il Numero Misterioso 1089</h2>
+            <div class="magic-icon">🎲🔮🎲</div>
+            
+            <div class="instructions">
+                <h3>Questo trucco porta sempre allo stesso risultato:</h3>
+                <ol>
+                    <li>Pensa a un numero di 3 cifre con cifre diverse (es. 523)</li>
+                    <li>Scrivi il numero al contrario (325)</li>
+                    <li>Sottrai il minore dal maggiore (523 - 325 = 198)</li>
+                    <li>Prendi il risultato e invertilo (891)</li>
+                    <li>Somma questi ultimi due numeri (198 + 891)</li>
+                    <li><strong>Il risultato sarà sempre 1089!</strong></li>
+                </ol>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Prova con un numero di 3 cifre:</h3>
+                <input type="number" id="number3" placeholder="Es: 523" min="100" max="999">
+                <button onclick="calculateTrick3()">🔮 Scopri il Mistero!</button>
+                <div id="result3" class="result"></div>
+            </div>
+            
+            <div class="explanation">
+                <h3>🔍 Spiegazione Matematica:</h3>
+                <p>Questo trucco funziona per le proprietà della sottrazione con numeri invertiti.</p>
+                <p>Se il numero è $\overline{abc}$ (dove $a > c$):</p>
+                <ul>
+                    <li>Il numero è: $100a + 10b + c$</li>
+                    <li>Invertito: $100c + 10b + a$</li>
+                    <li>Differenza: $100(a-c) + (c-a) = 99(a-c)$</li>
+                    <li>Questo dà sempre un numero con cifre simmetriche</li>
+                    <li>Sommando un numero a tre cifre simmetrico al suo inverso si ottiene sempre 1089!</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- TAB 4: Moltiplicare per 11 -->
+        <div id="tab4" class="tab-content">
+            <h2>✖️ La Moltiplicazione Prodigiosa per 11</h2>
+            <div class="magic-icon">⚡🧮⚡</div>
+            
+            <div class="instructions">
+                <h3>Impara a moltiplicare per 11 velocemente:</h3>
+                <ol>
+                    <li>Prendi un numero di 2 cifre (es. 34)</li>
+                    <li>Somma le sue cifre (3 + 4 = 7)</li>
+                    <li>Inserisci la somma tra le due cifre (3<strong>7</strong>4)</li>
+                    <li><strong>Risultato: 34 × 11 = 374!</strong></li>
+                    <li>Se la somma è ≥ 10, aggiungi 1 alla prima cifra (es. 67: 6+7=13 → 7<strong>3</strong>7)</li>
+                </ol>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Prova il trucco:</h3>
+                <input type="number" id="number4" placeholder="Numero (10-99)" min="10" max="99">
+                <button onclick="calculateTrick4()">⚡ Moltiplica per 11!</button>
+                <div id="result4" class="result"></div>
+            </div>
+            
+            <div class="explanation">
+                <h3>🔍 Spiegazione Matematica:</h3>
+                <p>Se il numero è $\overline{ab}$ (cioè $10a + b$):</p>
+                <p>$$11 \times (10a + b) = 110a + 11b = 100a + 10a + 10b + b$$</p>
+                <p>$$= 100a + 10(a + b) + b$$</p>
+                <p>Questo significa: <strong>centinaia di $a$, decine di $(a+b)$, unità di $b$</strong></p>
+                <p>Quindi basta mettere la somma delle cifre in mezzo!</p>
+                <p>Se $a + b \geq 10$, il "riporto" va alle centinaia.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabContent, tabButtons;
+            
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].classList.remove("active");
+            }
+            
+            tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        // TAB 1: Il Numero Pensato
+        function calculateTrick1() {
+            const num = parseFloat(document.getElementById('number1').value);
+            if (isNaN(num)) {
+                alert('Per favore inserisci un numero!');
+                return;
+            }
+            
+            let result = num;
+            let steps = `Numero iniziale: ${num}<br>`;
+            
+            result = result + 5;
+            steps += `Aggiungi 5: ${result}<br>`;
+            
+            result = result * 2;
+            steps += `Moltiplica per 2: ${result}<br>`;
+            
+            result = result - 4;
+            steps += `Sottrai 4: ${result}<br>`;
+            
+            result = result / 2;
+            steps += `Dividi per 2: ${result}<br>`;
+            
+            result = result - num;
+            steps += `Sottrai il numero iniziale (${num}): ${result}<br>`;
+            
+            const resultDiv = document.getElementById('result1');
+            resultDiv.innerHTML = `${steps}<br><strong>🎉 MAGIA! Il risultato è sempre 3! 🎉</strong>`;
+            resultDiv.classList.add('show');
+        }
+        
+        // TAB 2: Il Calendario Magico
+        let selectedSquare = null;
+        
+        function createCalendar() {
+            const calendar = document.getElementById('calendar');
+            const days = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
+            
+            // Headers
+            days.forEach(day => {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell calendar-header';
+                cell.textContent = day;
+                calendar.appendChild(cell);
+            });
+            
+            // Days (esempio gennaio che inizia di mercoledì)
+            const blanks = 2; // Gennaio inizia mercoledì
+            for (let i = 0; i < blanks; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                calendar.appendChild(cell);
+            }
+            
+            for (let day = 1; day <= 31; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                cell.textContent = day;
+                cell.onclick = function() {
+                    selectSquare(day);
+                };
+                calendar.appendChild(cell);
+            }
+        }
+        
+        function selectSquare(startDay) {
+            // Deseleziona tutto
+            const cells = document.querySelectorAll('.calendar-cell');
+            cells.forEach(cell => cell.classList.remove('selected'));
+            
+            // Verifica se il quadrato 3x3 è valido
+            const position = startDay + 2 - 1; // posizione nell'array (considerando i 2 blank)
+            const row = Math.floor(position / 7);
+            const col = position % 7;
+            
+            if (col > 4 || row > 3 || startDay > 15) {
+                alert('Scegli una posizione che permetta un quadrato 3x3 completo!');
+                return;
+            }
+            
+            // Seleziona il quadrato 3x3
+            selectedSquare = [];
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    const day = startDay + r * 7 + c;
+                    const cellIndex = day + 2 - 1 + 7; // +7 per le intestazioni
+                    if (cells[cellIndex]) {
+                        cells[cellIndex].classList.add('selected');
+                        selectedSquare.push(day);
+                    }
+                }
+            }
+        }
+        
+        function verifyCalendar() {
+            if (!selectedSquare || selectedSquare.length !== 9) {
+                alert('Seleziona prima un quadrato 3x3 cliccando su una cella!');
+                return;
+            }
+            
+            const sum = selectedSquare.reduce((a, b) => a + b, 0);
+            const center = selectedSquare[4]; // il numero centrale
+            const expected = center * 9;
+            
+            const resultDiv = document.getElementById('result2');
+            resultDiv.innerHTML = `
+                Numeri selezionati: ${selectedSquare.join(', ')}<br>
+                Somma totale: ${sum}<br>
+                Numero centrale: ${center}<br>
+                Numero centrale × 9: ${expected}<br>
+                <strong>🎉 ${sum === expected ? 'MAGIA VERIFICATA!' : 'Ops, qualcosa non va...'} 🎉</strong>
+            `;
+            resultDiv.classList.add('show');
+        }
+        
+        // TAB 3: Il Mistero del 1089
+        function calculateTrick3() {
+            let num = parseInt(document.getElementById('number3').value);
+            
+            if (isNaN(num) || num < 100 || num > 999) {
+                alert('Per favore inserisci un numero di 3 cifre!');
+                return;
+            }
+            
+            // Verifica cifre diverse
+            const digits = num.toString().split('');
+            if (digits[0] === digits[2]) {
+                alert('Le cifre estreme devono essere diverse!');
+                return;
+            }
+            
+            let steps = `Numero iniziale: ${num}<br>`;
+            
+            // Inverti
+            const reversed = parseInt(digits.reverse().join(''));
+            steps += `Numero invertito: ${reversed}<br>`;
+            
+            // Sottrai
+            const diff = Math.abs(num - reversed);
+            steps += `Differenza: |${num} - ${reversed}| = ${diff}<br>`;
+            
+            // Inverti il risultato
+            const diffReversed = parseInt(diff.toString().split('').reverse().join(''));
+            steps += `Risultato invertito: ${diffReversed}<br>`;
+            
+            // Somma
+            const finalResult = diff + diffReversed;
+            steps += `Somma finale: ${diff} + ${diffReversed} = ${finalResult}<br>`;
+            
+            const resultDiv = document.getElementById('result3');
+            resultDiv.innerHTML = `${steps}<br><strong>🎉 MISTERO RISOLTO! È sempre 1089! 🎉</strong>`;
+            resultDiv.classList.add('show');
+        }
+        
+        // TAB 4: Moltiplicare per 11
+        function calculateTrick4() {
+            const num = parseInt(document.getElementById('number4').value);
+            
+            if (isNaN(num) || num < 10 || num > 99) {
+                alert('Per favore inserisci un numero di 2 cifre (10-99)!');
+                return;
+            }
+            
+            const digit1 = Math.floor(num / 10);
+            const digit2 = num % 10;
+            const sum = digit1 + digit2;
+            
+            let result;
+            let steps = `Numero: ${num} (cifre: ${digit1} e ${digit2})<br>`;
+            steps += `Somma delle cifre: ${digit1} + ${digit2} = ${sum}<br>`;
+            
+            if (sum < 10) {
+                result = digit1 * 100 + sum * 10 + digit2;
+                steps += `Metti ${sum} in mezzo: ${digit1}${sum}${digit2}<br>`;
+            } else {
+                const carry = Math.floor(sum / 10);
+                const middle = sum % 10;
+                result = (digit1 + carry) * 100 + middle * 10 + digit2;
+                steps += `La somma è ${sum}, quindi aggiungi ${carry} alla prima cifra:<br>`;
+                steps += `${digit1 + carry}${middle}${digit2}<br>`;
+            }
+            
+            const verification = num * 11;
+            steps += `<br>Verifica: ${num} × 11 = ${verification}<br>`;
+            
+            const resultDiv = document.getElementById('result4');
+            resultDiv.innerHTML = `${steps}<strong>🎉 TRUCCO RIUSCITO! ${num} × 11 = ${result} 🎉</strong>`;
+            resultDiv.classList.add('show');
+        }
+        
+        // Inizializza il calendario
+        createCalendar();
+    </script>
+</body>
+</html>
